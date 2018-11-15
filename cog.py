@@ -32,6 +32,25 @@ class shellcog:
         await ctx.channel.send("oh hi")
 
     @commands.command()
+    async def guild(self, ctx, guild_ID: int):
+        url_combined = str("https://web.rythmbot.co/ajax/shard/" + guild_ID)
+        page = requests.get(url_combined)
+        python_obj = json.loads(page.text)
+        shard_ID=int(python_obj["shard"])
+        cluster_ID=int(python_obj["cluster"])
+        embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Info from Guild")
+        embed.add_field(name="Guild", value=guild_ID, inline=False)
+        embed.add_field(name="Shard", value=shard_ID, inline=False)
+        embed.add_field(name="Cluster", value=cluster_ID, inline=False)
+        rawstat = requests.get("https://status.rythmbot.co/raw")
+        embed.add_field(name="Status", value=json.loads(rawstat.text)[str(shard_ID)], inline=False)
+        #print(f"\nshard:\t\t{shard_ID}\ncluster:\t{cluster_ID}\n")
+        #print(f"{shard_ID}:", json.loads(rawstat.text)[str(shard_ID)])
+        await ctx.send(embed=embed)
+
+
+
+    @commands.command()
     async def cluster(self, ctx):
         shardcount=2304
         onlinecount=0
@@ -88,7 +107,7 @@ class shellcog:
         problems=shardcount-onlinecount
         embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(str(round(((onlinecount)/shardcount), 1)*100), problems))
 
-        print("\nTotal Issues\t", len(issues_array))
+        #print("\nTotal Issues\t", len(issues_array))
         if len(cluster0)!=0:
             embed.add_field(name="Cluster 0", value=(len(cluster0)), inline=False)
             #print("rc 0 Issues\t", "{0:0=3d}".format(len(cluster0)))
