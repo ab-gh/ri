@@ -31,7 +31,7 @@ class shellcog:
     async def hello(self, ctx):
         await ctx.channel.send("oh hi")
 
-    @commands.command()
+    @commands.command(aliases=["g"])
     async def guild(self, ctx, guild_ID: int):
         url_combined = str("https://web.rythmbot.co/ajax/shard/" + str(guild_ID))
         page = requests.get(url_combined)
