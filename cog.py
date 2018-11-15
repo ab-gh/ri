@@ -17,11 +17,11 @@ class shellcog:
         self.bot = bot
 
     @commands.command()
-    async def hello(ctx):
+    async def hello(self, ctx):
         await ctx.channel.send("oh hi")
 
     @commands.command()
-    async def status(ctx):
+    async def status(self, ctx):
         shardcount=2304
         onlinecount=0
         initi=[]
