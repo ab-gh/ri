@@ -16,6 +16,17 @@ class shellcog:
     def __init__(self, bot):
         self.bot = bot
 
+    def getstr(self, arre):
+        if len(arre)>5:
+            return "..."
+        elif len(arre)==0:
+            return ""
+        else:
+            arre_s=">"
+            for i in arre:
+                arre_s="\t"+arre_s+i+", "
+            return arre_s
+
     @commands.command()
     async def hello(self, ctx):
         await ctx.channel.send("oh hi")
@@ -90,27 +101,27 @@ class shellcog:
                 embed.add_field(name="Reconnect queue", value=(len(queue)))
                 #print("In recon queue\t", "{0:0=3d}".format(len(queue)), getstr(queue))
             if len(waitcon) != 0:
-                print("Wait to recon\t", "{0:0=3d}".format(len(waitcon)), getstr(waitcon))
+                print("Wait to recon\t", "{0:0=3d}".format(len(waitcon)), self.getstr(waitcon))
             if len(load) != 0:
-                print("Loading subs\t", "{0:0=3d}".format(len(load)), getstr(load))
+                print("Loading subs\t", "{0:0=3d}".format(len(load)), self.getstr(load))
             if len(awaiting) != 0:
-                print("Awaiting conf\t", "{0:0=3d}".format(len(awaiting)), getstr(awaiting))
+                print("Awaiting conf\t", "{0:0=3d}".format(len(awaiting)), self.getstr(awaiting))
             if len(initi) != 0:
-                print("Initialising\t\t", "{0:0=3d}".format(len(initi)), getstr(initi))
+                print("Initialising\t\t", "{0:0=3d}".format(len(initi)), self.getstr(initi))
             if len(initd) != 0:
-                print("Initialised\t\t", "{0:0=3d}".format(len(initd)), getstr(initd))
+                print("Initialised\t\t", "{0:0=3d}".format(len(initd)), self.getstr(initd))
             if len(log) != 0:
-                print("Logging in\t", "{0:0=3d}".format(len(log)), "\t", getstr(log))
+                print("Logging in\t", "{0:0=3d}".format(len(log)), "\t", self.getstr(log))
             if len(webs) != 0:
-                print("Connect to webs", "{0:0=3d}".format(len(webs)), getstr(webs))
+                print("Connect to webs", "{0:0=3d}".format(len(webs)), self.getstr(webs))
             if len(ident) != 0:
-                print("Identifying\t\t", "{0:0=3d}".format(len(ident)), getstr(ident))
+                print("Identifying\t\t", "{0:0=3d}".format(len(ident)), self.getstr(ident))
             if len(recon) != 0:
-                print("Reconnecting\t\t", "{0:0=3d}".format(len(recon)), getstr(recon))
+                print("Reconnecting\t\t", "{0:0=3d}".format(len(recon)), self.getstr(recon))
             if len(attempt) != 0:
-                print("Attempt to reconn", "{0:0=3d}".format(len(attempt)), getstr(attempt))
+                print("Attempt to reconn", "{0:0=3d}".format(len(attempt)), self.getstr(attempt))
             if len(missing) != 0:
-                print("Data missing", "{0:0=3d}".format(len(missing)), getstr(missing))
+                print("Data missing", "{0:0=3d}".format(len(missing)), self.getstr(missing))
             await ctx.send(embed=embed)
         print("------------------------------")
         print("By cluster")
