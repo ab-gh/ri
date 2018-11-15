@@ -48,6 +48,18 @@ class shellcog:
         #print(f"{shard_ID}:", json.loads(rawstat.text)[str(shard_ID)])
         await ctx.send(embed=embed)
 
+    @commands.command()
+    async def shard(self, ctx, shard_ID: int):
+        shardcount=2304
+        embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Info from Guild")
+        embed.add_field(name="Shard", value=shard_ID, inline=False)
+        embed.add_field(name="Cluster", value=math.floor(int(shard_ID)/int(math.ceil(shardcount/9))), inline=False)
+        rawstat = requests.get("https://status.rythmbot.co/raw")
+        embed.add_field(name="Status", value=json.loads(rawstat.text)[str(shard_ID)], inline=False)
+        #print(f"\nshard:\t\t{shard_ID}\ncluster:\t{cluster_ID}\n")
+        #print(f"{shard_ID}:", json.loads(rawstat.text)[str(shard_ID)])
+        await ctx.send(embed=embed)
+
 
 
     @commands.command()
