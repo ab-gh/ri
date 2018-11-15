@@ -72,7 +72,7 @@ class shellcog:
             embed.set_author(name="Rythm Status")
             embed.set_footer(text="a bot by ash#0001")
 
-            await stx.send(embed=embed)
+            await ctx.send(embed=embed)
 
 
         else:
@@ -110,7 +110,7 @@ class shellcog:
                 print("Attempt to reconn", "{0:0=3d}".format(len(attempt)), getstr(attempt))
             if len(missing) != 0:
                 print("Data missing", "{0:0=3d}".format(len(missing)), getstr(missing))
-            await stx.send(embed=embed)
+            await ctx.send(embed=embed)
         print("------------------------------")
         print("By cluster")
         info_from_cluster(shardcount)
