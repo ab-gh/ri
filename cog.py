@@ -88,15 +88,14 @@ class shellcog:
 
 
         else:
-            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online".format(str(round(((onlinecount)/shardcount), 1)*100)))
             embed.set_author(name="Rythm Status")
             embed.set_footer(text="a bot by ash#0001")
             #print("Rythm is ", round(((onlinecount)/shardcount), 1)*100, "% online")
-            print(onlinecount, "\t Online")
             problems=shardcount-onlinecount
             print("------------------------------")
             print("By issue\n")
             print("Total Issues\t", problems)
+            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(str(round(((onlinecount)/shardcount), 1)*100)), problems)
             if len(queue) != 0:
                 embed.add_field(name="Reconnect queue", value=(len(queue)))
                 #print("In recon queue\t", "{0:0=3d}".format(len(queue)), getstr(queue))
@@ -134,9 +133,7 @@ class shellcog:
                 #print("Data missing", "{0:0=3d}".format(len(missing)), self.getstr(missing))
                 embed.add_field(name="Data missing", value=(len(missing)))
             await ctx.send(embed=embed)
-        print("------------------------------")
-        print("By cluster")
-        info_from_cluster(shardcount)
+
 
 
 
