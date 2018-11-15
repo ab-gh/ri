@@ -88,25 +88,36 @@ class shellcog:
 
         print("\nTotal Issues\t", len(issues_array))
         if len(cluster0)!=0:
-            print("rc 0 Issues\t", "{0:0=3d}".format(len(cluster0)))
+            embed.add_field(name="Cluster 0", value=(len(cluster0)), inline=False)
+            #print("rc 0 Issues\t", "{0:0=3d}".format(len(cluster0)))
         if len(cluster1)!=0:
-            print("rc 1 Issues\t", "{0:0=3d}".format(len(cluster1)))
+            embed.add_field(name="Cluster 1", value=(len(cluster1)), inline=False)
+            #print("rc 1 Issues\t", "{0:0=3d}".format(len(cluster1)))
         if len(cluster2)!=0:
-            print("rc 2 Issues\t", "{0:0=3d}".format(len(cluster2)))
+            embed.add_field(name="Cluster 2", value=(len(cluster2)), inline=False)
+            #print("rc 2 Issues\t", "{0:0=3d}".format(len(cluster2)))
         if len(cluster3)!=0:
-            print("rc 3 Issues\t", "{0:0=3d}".format(len(cluster3)))
+            embed.add_field(name="Cluster 3", value=(len(cluster3)), inline=False)
+            #print("rc 3 Issues\t", "{0:0=3d}".format(len(cluster3)))
         if len(cluster4)!=0:
-            print("rc 4 Issues\t", "{0:0=3d}".format(len(cluster4)))
+            embed.add_field(name="Cluster 4", value=(len(cluster4)), inline=False)
+            #print("rc 4 Issues\t", "{0:0=3d}".format(len(cluster4)))
         if len(cluster5)!=0:
-            print("rc 5 Issues\t", "{0:0=3d}".format(len(cluster5)))
+            embed.add_field(name="Cluster 5", value=(len(cluster5)), inline=False)
+            #print("rc 5 Issues\t", "{0:0=3d}".format(len(cluster5)))
         if len(cluster6)!=0:
-            print("rc 6 Issues\t", "{0:0=3d}".format(len(cluster6)))
+            embed.add_field(name="Cluster 6", value=(len(cluster6)), inline=False)
+            #print("rc 6 Issues\t", "{0:0=3d}".format(len(cluster6)))
         if len(cluster7)!=0:
-            print("rc 7 Issues\t", "{0:0=3d}".format(len(cluster7)))
+            embed.add_field(name="Cluster 7", value=(len(cluster7)), inline=False)
+            #print("rc 7 Issues\t", "{0:0=3d}".format(len(cluster7)))
         if len(cluster8)!=0:
-            print("rc 8 Issues\t", "{0:0=3d}".format(len(cluster8)))
+            embed.add_field(name="Cluster 8", value=(len(cluster8)), inline=False)
+            #print("rc 8 Issues\t", "{0:0=3d}".format(len(cluster8)))
         if len(cluster9)!=0:
-            print("rc 9 Issues\t", "{0:0=3d}".format(len(cluster9)))
+            embed.add_field(name="Cluster 9", value=(len(cluster9)), inline=False)
+            #print("rc 9 Issues\t", "{0:0=3d}".format(len(cluster9)))
+        await ctx.send(embed=embed)
 
 
     @commands.command()
