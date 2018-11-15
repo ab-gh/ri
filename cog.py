@@ -32,6 +32,84 @@ class shellcog:
         await ctx.channel.send("oh hi")
 
     @commands.command()
+    async def cluster(self, ctx):
+        onlinecount=0
+        issues_array=[]
+
+
+
+        #### change this!!!
+        rawstat = requests.get("http://cdn.dvorak.host/test.json")
+        ####
+
+
+
+        raw=json.loads(rawstat.text)
+        for i in raw:
+            if raw[str(i)]=="CONNECTED":
+                onlinecount=onlinecount+1
+            else:
+                shard_ID=int(i)
+                cluster_ID=math.floor(int(shard_ID)/int(math.ceil(shardcount/9)))
+                issues_array.append([shard_ID, cluster_ID])
+        cluster0=[]
+        cluster1=[]
+        cluster2=[]
+        cluster3=[]
+        cluster4=[]
+        cluster5=[]
+        cluster6=[]
+        cluster7=[]
+        cluster8=[]
+        cluster9=[]
+        for j in issues_array:
+            if (j[1])==0:
+                cluster0.append(j)
+            if (j[1])==1:
+                cluster1.append(j)
+            if (j[1])==2:
+                cluster2.append(j)
+            if (j[1])==3:
+                cluster3.append(j)
+            if (j[1])==4:
+                cluster4.append(j)
+            if (j[1])==5:
+                cluster5.append(j)
+            if (j[1])==6:
+                cluster6.append(j)
+            if (j[1])==7:
+                cluster7.append(j)
+            if (j[1])==8:
+                cluster8.append(j)
+            if (j[1])==9:
+                cluster9.append(j)
+            ###
+        embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(str(round(((onlinecount)/shardcount), 1)*100), problems))
+
+        print("\nTotal Issues\t", len(issues_array))
+        if len(cluster0)!=0:
+            print("rc 0 Issues\t", "{0:0=3d}".format(len(cluster0)))
+        if len(cluster1)!=0:
+            print("rc 1 Issues\t", "{0:0=3d}".format(len(cluster1)))
+        if len(cluster2)!=0:
+            print("rc 2 Issues\t", "{0:0=3d}".format(len(cluster2)))
+        if len(cluster3)!=0:
+            print("rc 3 Issues\t", "{0:0=3d}".format(len(cluster3)))
+        if len(cluster4)!=0:
+            print("rc 4 Issues\t", "{0:0=3d}".format(len(cluster4)))
+        if len(cluster5)!=0:
+            print("rc 5 Issues\t", "{0:0=3d}".format(len(cluster5)))
+        if len(cluster6)!=0:
+            print("rc 6 Issues\t", "{0:0=3d}".format(len(cluster6)))
+        if len(cluster7)!=0:
+            print("rc 7 Issues\t", "{0:0=3d}".format(len(cluster7)))
+        if len(cluster8)!=0:
+            print("rc 8 Issues\t", "{0:0=3d}".format(len(cluster8)))
+        if len(cluster9)!=0:
+            print("rc 9 Issues\t", "{0:0=3d}".format(len(cluster9)))
+
+
+    @commands.command()
     async def status(self, ctx):
         shardcount=2304
         onlinecount=0
@@ -90,49 +168,49 @@ class shellcog:
         else:
             #print("Rythm is ", round(((onlinecount)/shardcount), 1)*100, "% online")
             problems=shardcount-onlinecount
-            print("------------------------------")
-            print("By issue\n")
-            print("Total Issues\t", problems)
+            #print("------------------------------")
+            #print("By issue\n")
+            #print("Total Issues\t", problems)
             embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(str(round(((onlinecount)/shardcount), 1)*100), problems))
             embed.set_author(name="Rythm Status")
             embed.set_footer(text="a bot by ash#0001")
 
             if len(queue) != 0:
-                embed.add_field(name="Reconnect queue", value=(len(queue)))
+                embed.add_field(name="Reconnect queue", value=(len(queue)), inline=False)
                 #print("In recon queue\t", "{0:0=3d}".format(len(queue)), getstr(queue))
             if len(waitcon) != 0:
                 #print("Wait to recon\t", "{0:0=3d}".format(len(waitcon)), self.getstr(waitcon))
-                embed.add_field(name="Waiting to reconnect", value=(len(waitcon)))
+                embed.add_field(name="Waiting to reconnect", value=(len(waitcon)), inline=False)
             if len(load) != 0:
                 #print("Loading subs\t", "{0:0=3d}".format(len(load)), self.getstr(load))
-                embed.add_field(name="Loading subsystems", value=(len(load)))
+                embed.add_field(name="Loading subsystems", value=(len(load)), inline=False)
             if len(awaiting) != 0:
                 #print("Awaiting conf\t", "{0:0=3d}".format(len(awaiting)), self.getstr(awaiting))
-                embed.add_field(name="Awaiting confirmation", value=(len(awaiting)))
+                embed.add_field(name="Awaiting confirmation", value=(len(awaiting)), inline=False)
             if len(initi) != 0:
                 #print("Initialising\t\t", "{0:0=3d}".format(len(initi)), self.getstr(initi))
-                embed.add_field(name="Initialising", value=(len(initi)))
+                embed.add_field(name="Initialising", value=(len(initi)), inline=False)
             if len(initd) != 0:
                 #print("Initialised\t\t", "{0:0=3d}".format(len(initd)), self.getstr(initd))
-                embed.add_field(name="Initialised", value=(len(initd)))
+                embed.add_field(name="Initialised", value=(len(initd)), inline=False)
             if len(log) != 0:
                 #print("Logging in\t", "{0:0=3d}".format(len(log)), "\t", self.getstr(log))
-                embed.add_field(name="Logging in", value=(len(log)))
+                embed.add_field(name="Logging in", value=(len(log)), inline=False)
             if len(webs) != 0:
                 #print("Connect to webs", "{0:0=3d}".format(len(webs)), self.getstr(webs))
-                embed.add_field(name="Connecting to websocket", value=(len(webs)))
+                embed.add_field(name="Connecting to websocket", value=(len(webs)), inline=False)
             if len(ident) != 0:
                 #print("Identifying\t\t", "{0:0=3d}".format(len(ident)), self.getstr(ident))
-                embed.add_field(name="Identifying", value=(len(ident)))
+                embed.add_field(name="Identifying", value=(len(ident)), inline=False)
             if len(recon) != 0:
                 #print("Reconnecting\t\t", "{0:0=3d}".format(len(recon)), self.getstr(recon))
-                embed.add_field(name="Reconnecting", value=(len(recon)))
+                embed.add_field(name="Reconnecting", value=(len(recon)), inline=False)
             if len(attempt) != 0:
                 #print("Attempt to reconn", "{0:0=3d}".format(len(attempt)), self.getstr(attempt))
-                embed.add_field(name="Attempting to reconnect", value=(len(attempt)))
+                embed.add_field(name="Attempting to reconnect", value=(len(attempt)), inline=False)
             if len(missing) != 0:
                 #print("Data missing", "{0:0=3d}".format(len(missing)), self.getstr(missing))
-                embed.add_field(name="Data missing", value=(len(missing)))
+                embed.add_field(name="Data missing", value=(len(missing)), inline=False)
             await ctx.send(embed=embed)
 
 
