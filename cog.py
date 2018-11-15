@@ -33,7 +33,7 @@ class shellcog:
 
     @commands.command()
     async def guild(self, ctx, guild_ID: int):
-        url_combined = str("https://web.rythmbot.co/ajax/shard/" + guild_ID)
+        url_combined = str("https://web.rythmbot.co/ajax/shard/" + str(guild_ID))
         page = requests.get(url_combined)
         python_obj = json.loads(page.text)
         shard_ID=int(python_obj["shard"])
