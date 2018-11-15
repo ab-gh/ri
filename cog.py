@@ -13,8 +13,6 @@ import math
 
 class shellcog:
 
-    shardcount=2304
-
     def __init__(self, bot):
         self.bot = bot
 
@@ -24,6 +22,7 @@ class shellcog:
 
     @commands.command()
     async def status(ctx):
+        shardcount=2304
         onlinecount=0
         initi=[]
         initd=[]
