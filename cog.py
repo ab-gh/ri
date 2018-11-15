@@ -48,7 +48,7 @@ class shellcog:
         #print(f"{shard_ID}:", json.loads(rawstat.text)[str(shard_ID)])
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=["s"])
     async def shard(self, ctx, shard_ID: int):
         shardcount=2304
         embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Info from Shard")
@@ -60,7 +60,7 @@ class shellcog:
         #print(f"{shard_ID}:", json.loads(rawstat.text)[str(shard_ID)])
         await ctx.send(embed=embed)
 
-    @commands.command()
+    @commands.command(aliases=["c"])
     async def cluster(self, ctx):
         shardcount=2304
         onlinecount=0
@@ -151,7 +151,7 @@ class shellcog:
         await ctx.send(embed=embed)
 
 
-    @commands.command()
+    @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
         shardcount=2304
         onlinecount=0
