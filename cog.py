@@ -117,7 +117,5 @@ class shellcog:
 
 
 
-
-
 def setup(bot):
-    bot.add_cog(shellcog)
+    bot.add_cog(shellcog(bot))
