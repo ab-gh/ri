@@ -18,11 +18,11 @@ def gettoken():
     return token
 token = gettoken()
 
-description = "use -help"
+description = "use ri help"
 
 
 
-bot = commands.Bot(command_prefix=["-"], description=description)
+bot = commands.Bot(command_prefix=["ri "], description=description)
 
 
 
