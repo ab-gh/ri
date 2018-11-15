@@ -87,7 +87,7 @@ class shellcog:
             print("By issue\n")
             print("Total Issues\t", problems)
             if len(queue) != 0:
-                embed.add_field(name="Reconnect queue"", value=(len(queue)))
+                embed.add_field(name="Reconnect queue", value=(len(queue)))
                 #print("In recon queue\t", "{0:0=3d}".format(len(queue)), getstr(queue))
             if len(waitcon) != 0:
                 print("Wait to recon\t", "{0:0=3d}".format(len(waitcon)), getstr(waitcon))
