@@ -69,7 +69,8 @@ class shellcog:
 
 
         #### change this!!!
-        rawstat = requests.get("http://cdn.dvorak.host/test.json")
+        #rawstat = requests.get("http://cdn.dvorak.host/test.json")
+        rawstat = requests.get("https://status.rythmbot.co/raw")
         ####
 
 
