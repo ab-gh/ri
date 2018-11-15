@@ -110,7 +110,7 @@ class shellcog:
                 print("Attempt to reconn", "{0:0=3d}".format(len(attempt)), getstr(attempt))
             if len(missing) != 0:
                 print("Data missing", "{0:0=3d}".format(len(missing)), getstr(missing))
-            await ctx.send(embed=embed)
+            await ctx.send(embed=embed) # v4 had to fix this line
         print("------------------------------")
         print("By cluster")
         info_from_cluster(shardcount)
