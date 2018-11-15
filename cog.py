@@ -95,7 +95,7 @@ class shellcog:
             print("------------------------------")
             print("By issue\n")
             print("Total Issues\t", problems)
-            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(str(round(((onlinecount)/shardcount), 1)*100)), problems)
+            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(str(round(((onlinecount)/shardcount), 1)*100), problems))
             if len(queue) != 0:
                 embed.add_field(name="Reconnect queue", value=(len(queue)))
                 #print("In recon queue\t", "{0:0=3d}".format(len(queue)), getstr(queue))
