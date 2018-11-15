@@ -85,6 +85,7 @@ class shellcog:
             if (j[1])==9:
                 cluster9.append(j)
             ###
+        problems=shardcount-onlinecount
         embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(str(round(((onlinecount)/shardcount), 1)*100), problems))
 
         print("\nTotal Issues\t", len(issues_array))
