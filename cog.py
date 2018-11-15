@@ -33,6 +33,7 @@ class shellcog:
 
     @commands.command()
     async def cluster(self, ctx):
+        shardcount=2304
         onlinecount=0
         issues_array=[]
 
