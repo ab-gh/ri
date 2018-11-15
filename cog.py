@@ -17,11 +17,11 @@ class shellcog:
         self.bot = bot
 
     @commands.command()
-    async def hello(self, ctx):
+    async def hello(self, ctx): # by proxy of below (status), v4 fixed this line
         await ctx.channel.send("oh hi")
 
     @commands.command()
-    async def status(self, ctx):
+    async def status(self, ctx): # v4 fixed this line
         shardcount=2304
         onlinecount=0
         initi=[]
@@ -118,4 +118,4 @@ class shellcog:
 
 
 def setup(bot):
-    bot.add_cog(shellcog(bot))
+    bot.add_cog(shellcog(bot)) # v4 also fixed this line
