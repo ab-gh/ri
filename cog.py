@@ -36,7 +36,8 @@ class shellcog:
         waitcon=[]
         queue=[]
         missing=[]
-        rawstat = requests.get("https://status.rythmbot.co/raw")
+        #rawstat = requests.get("https://status.rythmbot.co/raw")
+        rawstat = requests.get("http://cdn.dvorak.host/test.json")
         raw=json.loads(rawstat.text)
         for i in raw:
             if raw[str(i)]=="CONNECTED":
