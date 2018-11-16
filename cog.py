@@ -29,7 +29,7 @@ class shellcog:
 
     @commands.command()
     async def help(self, ctx):
-        await ctx.channel.send("**Command**\t\t\t\t\t\t\t**Aliases**\t\t**Description**\n`ri hello`\n`ri help`\t\t\t\t\t\t\t\tNone\t\t  This command\n`ri guild <guild_ID>`\t`g`\t\t\t\t  Shard and Cluster information from the given Guild ID\n`ri shard <shard_ID>`\t`s`\t\t\t\t  Shard and Cluster information from the given Shard ID\n`ri cluster`\t\t\t\t\t\t`c`\t\t\t\tInformaion on shard issues sorted by cluster\n`ri status`\t\t\t\t\t\t`info, i`\tInformation on shard issues by issue type")
+        await ctx.channel.send("**Command**\t\t\t\t\t\t\t**Aliases**\t\t**Description**\n`ri hello`\n`ri help`\t\t\t\t\t\t\t\tNone\t\t  This command\n`ri guild <guild_ID>`\t`g`\t\t\t\t  Shard and Cluster information from the given Guild ID\n`ri shard <shard_ID>`\t`s`\t\t\t\t  Shard and Cluster information from the given Shard ID\n`ri cluster`\t\t\t\t\t\t`c`\t\t\t\t\tInformaion on shard issues sorted by cluster\n`ri status`\t\t\t\t\t\t\t`info, i`\tInformation on shard issues by issue type")
 
     @commands.command()
     async def hello(self, ctx):
