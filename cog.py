@@ -29,7 +29,7 @@ class shellcog:
 
     @commands.command()
     async def help(self, ctx):
-        await ctx.channel.send("**Command**\t**Description**\t**Aliases**\n`ri hello`\n`ri help`\t This command\n`ri guild <guild_ID>`\tShard and Cluster information from the given Guild ID\n`ri shard <shard_ID>\tShard and Cluster information from the given Shard ID")
+        await ctx.channel.send("**Command**\t\t**Aliases**\t\t**Description**\n`ri hello`\n`ri help`\t\tNone\tThis command\n`ri guild <guild_ID>`\t`g`\tShard and Cluster information from the given Guild ID\n`ri shard <shard_ID>\tShard and Cluster information from the given Shard ID")
 
     @commands.command()
     async def hello(self, ctx):
