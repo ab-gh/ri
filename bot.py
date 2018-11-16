@@ -1,5 +1,4 @@
-__authors__ = 'electric-blue-green'
-__license__ = 'MIT'
+__authors__ = 'aejb'
 import discord
 from discord.ext import commands
 import sqlite3
@@ -20,11 +19,7 @@ token = gettoken()
 
 description = "use ri help"
 
-
-
 bot = commands.Bot(command_prefix=["ri "], description=description)
-
-
 
 if __name__ == '__main__':
     for extension in initial_extensions:
