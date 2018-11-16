@@ -104,6 +104,7 @@ class shellcog:
                 cluster9.append(j)
         problems=self.shardcount-onlinecount
         embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(str(round(((onlinecount)/self.shardcount), 1)*100), problems))
+        embed.set_author(name="Rythm Cluster Status")
         if len(cluster0)!=0:
             embed.add_field(name="Cluster 0", value=(len(cluster0)), inline=False)
         if len(cluster1)!=0:
@@ -173,7 +174,7 @@ class shellcog:
             else:
                 missing.append(str(i))
         if onlinecount==self.shardcount:
-            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is Online")
+            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is 100% Online\nThere are 0 issues")
             embed.set_author(name="Rythm Status")
             embed.set_footer(text="a bot by ash#0001")
             await ctx.send(embed=embed)
