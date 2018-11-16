@@ -28,6 +28,10 @@ class shellcog:
             return arre_s
 
     @commands.command()
+    async def help(self, ctx):
+        await ctx.channel.send("**Command**\t**Description**\t**Aliases**\n`ri hello`\n`ri help`\t This command\n`ri guild <guild_ID>`\tShard and Cluster information from the given Guild ID\n`ri shard <shard_ID>\tShard and Cluster information from the given Shard ID")
+
+    @commands.command()
     async def hello(self, ctx):
         await ctx.channel.send("oh hi")
 
@@ -211,4 +215,5 @@ class shellcog:
             await ctx.send(embed=embed)
 
 def setup(bot):
+    bot.remove_command("help")
     bot.add_cog(shellcog(bot))
