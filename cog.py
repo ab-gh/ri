@@ -44,6 +44,7 @@ class shellcog:
         embed.add_field(name="Cluster", value=cluster_ID, inline=False)
         rawstat = requests.get("https://status.rythmbot.co/raw")
         embed.add_field(name="Status", value=json.loads(rawstat.text)[str(shard_ID)], inline=False)
+        embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["s"])
@@ -53,6 +54,7 @@ class shellcog:
         embed.add_field(name="Cluster", value=math.floor(int(shard_ID)/int(math.ceil(self.shardcount/9))), inline=False)
         rawstat = requests.get("https://status.rythmbot.co/raw")
         embed.add_field(name="Status", value=json.loads(rawstat.text)[str(shard_ID)], inline=False)
+        embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["c"])
@@ -122,6 +124,7 @@ class shellcog:
             embed.add_field(name="Cluster 8", value=(len(cluster8)), inline=False)
         if len(cluster9)!=0:
             embed.add_field(name="Cluster 9", value=(len(cluster9)), inline=False)
+        embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
     @commands.command(aliases=["info", "i"])
