@@ -1,2 +1,4 @@
 # ri
-rythm info
+Rythm Info
+
+A bot for https://github.com/aejb/ry
