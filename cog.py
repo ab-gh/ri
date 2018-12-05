@@ -45,7 +45,7 @@ class ShellCog:
         # raw_stat = requests.get("https://status.rythmbot.co/raw")
         raw = json.loads(raw_stat.text)
         for i in raw:
-           if math.floor(int(shard_id) / int(math.ceil(self.shardCount / 9))) == cluster_choice:
+           if math.floor(int(i) / int(math.ceil(self.shardCount / 9))) == cluster_choice:
                if raw[str(i)] == "CONNECTED":
                    onlinecount = onlinecount + 1
                elif raw[str(i)] == "INITIALIZING":
