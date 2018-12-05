@@ -12,7 +12,7 @@ def gettoken():
     token_string = token_file.read()
     token_token = token_string.split("\n")
     bot_token = str(token_token[0])
-    return int(bot_token)
+    return bot_token
 
 
 bot_token = gettoken()
