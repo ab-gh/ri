@@ -9,6 +9,7 @@ import sys
 from bs4 import BeautifulSoup
 import json
 import math
+import datetime
 
 class shellcog:
 
@@ -132,6 +133,8 @@ class shellcog:
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
+    ## RYTHM INFO
+
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
         onlinecount=0
@@ -212,7 +215,11 @@ class shellcog:
                 embed.add_field(name="Attempting to reconnect", value=(len(attempt)), inline=False)
             if len(missing) != 0:
                 embed.add_field(name="Data missing", value=(len(missing)), inline=False)
+            timeToSeconds=int(problems*6.5)
+            timeInMinutes=str(datetime.timedelta(seconds=timeToSeconds))
+            embed.add_field(name="Expected Resolution Time", value=timeInMinutes, inline=False)
             await ctx.send(embed=embed)
+
 
 def setup(bot):
     bot.remove_command("help")
