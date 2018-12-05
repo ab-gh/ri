@@ -86,7 +86,7 @@ class ShellCog:
             embed.set_footer(text="a bot by ash#0001")
             await ctx.send(embed=embed)
         else:
-            problems = self.shardCount - onlinecount
+            problems = found_count - onlinecount
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm Cluster {} is {}% Online\nThere are {} issues".format(cluster_choice,
                                       str(round((onlinecount / self.shardCount), 1) * 100), problems))
