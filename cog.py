@@ -26,7 +26,7 @@ class ShellCog:
     async def hello(self, ctx):
         await ctx.channel.send("oh hi")
 
-    @commands.command(alises="ci")
+    @commands.command(alises=["ci"])
     async def clusterinfo(self, ctx, cluster_choice: int):
         onlinecount = 0
         initi = []
