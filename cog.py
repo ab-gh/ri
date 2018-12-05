@@ -28,6 +28,7 @@ class ShellCog:
 
     @commands.command(aliases=["ci"])
     async def clusterinfo(self, ctx, cluster_choice: int):
+        await ctx.channel.send('Loading...')
         onlinecount = 0
         found_count = 0
         initi = []
@@ -42,8 +43,8 @@ class ShellCog:
         waitcon = []
         queue = []
         missing = []
-        raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-        # raw_stat = requests.get("https://status.rythmbot.co/raw")
+        # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
+        raw_stat = requests.get("https://status.rythmbot.co/raw")
         raw = json.loads(raw_stat.text)
         # print("finished array setup")
         for i in raw:
@@ -120,6 +121,7 @@ class ShellCog:
 
     @commands.command(aliases=["g"])
     async def guild(self, ctx, guild_id: int):
+        await ctx.channel.send('Loading...')
         url_combined = str("https://web.rythmbot.co/ajax/shard/" + str(guild_id))
         page = requests.get(url_combined)
         python_obj = json.loads(page.text)
@@ -136,6 +138,7 @@ class ShellCog:
 
     @commands.command(aliases=["s"])
     async def shard(self, ctx, shard_id: int):
+        await ctx.channel.send('Loading...')
         embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Info from Shard")
         embed.add_field(name="Shard", value=str(shard_id), inline=False)
         embed.add_field(name="Cluster", value=str(math.floor(int(shard_id) / int(math.ceil(self.shardCount / 9)))),
@@ -147,10 +150,11 @@ class ShellCog:
 
     @commands.command(aliases=["c"])
     async def cluster(self, ctx):
+        await ctx.channel.send('Loading...')
         onlinecount = 0
         issues_array = []
-        raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-        #raw_stat = requests.get("https://status.rythmbot.co/raw")
+        # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
+        raw_stat = requests.get("https://status.rythmbot.co/raw")
         raw = json.loads(raw_stat.text)
         for i in raw:
             if raw[str(i)] == "CONNECTED":
@@ -225,6 +229,7 @@ class ShellCog:
 
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
+        await ctx.channel.send('Loading...')
         onlinecount = 0
         initi = []
         initd = []
@@ -238,8 +243,8 @@ class ShellCog:
         waitcon = []
         queue = []
         missing = []
-        #raw_stat = requests.get("https://status.rythmbot.co/raw")
-        raw_stat = requests.get("http://cdn.dvorak.host/test.json")
+        raw_stat = requests.get("https://status.rythmbot.co/raw")
+        # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
         raw = json.loads(raw_stat.text)
         for i in raw:
             if raw[str(i)] == "CONNECTED":
