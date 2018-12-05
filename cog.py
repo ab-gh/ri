@@ -57,8 +57,8 @@ class ShellCog:
     async def cluster(self, ctx):
         onlinecount = 0
         issues_array = []
-        # debug raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-        raw_stat = requests.get("https://status.rythmbot.co/raw")
+        raw_stat = requests.get("http://cdn.dvorak.host/test.json")
+        #raw_stat = requests.get("https://status.rythmbot.co/raw")
         raw = json.loads(raw_stat.text)
         for i in raw:
             if raw[str(i)] == "CONNECTED":
@@ -146,8 +146,8 @@ class ShellCog:
         waitcon = []
         queue = []
         missing = []
-        raw_stat = requests.get("https://status.rythmbot.co/raw")
-        # debug raw_stat = requests.get("http://cdn.dvorak.host/test.json")
+        #raw_stat = requests.get("https://status.rythmbot.co/raw")
+        raw_stat = requests.get("http://cdn.dvorak.host/test.json")
         raw = json.loads(raw_stat.text)
         for i in raw:
             if raw[str(i)] == "CONNECTED":
