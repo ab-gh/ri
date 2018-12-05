@@ -76,7 +76,7 @@ class ShellCog:
                    queue.append(str(i))
                else:
                    missing.append(str(i))
-        else:
+        # else:
             # print("not in cluster")
         # print("finished checks")
         if onlinecount == found_count:
@@ -117,7 +117,6 @@ class ShellCog:
             if len(missing) != 0:
                 embed.add_field(name="Data missing", value=str((len(missing))), inline=False)
             await ctx.send(embed=embed)
-
 
     @commands.command(aliases=["g"])
     async def guild(self, ctx, guild_id: int):
