@@ -19,7 +19,7 @@ class ShellCog:
                                "help`\t\t\t\t\t\t\t\tNone\t\t  This command\n`ri guild <guild_ID>`\t`g`\t\t\t\t  "
                                "Shard and Cluster information from the given Guild ID\n`ri shard "
                                "<shard_ID>`\t`s`\t\t\t\t  Shard and Cluster information from the given Shard ID\n`ri "
-                               "cluster`\t\t\t\t\t\t `c`\t\t\t\t  Informaion on shard issues sorted by cluster\n`ri "
+                               "cluster`\t\t\t\t\t\t `c`\t\t\t\t  Information on shard issues sorted by cluster\n`ri "
                                "status`\t\t\t\t\t\t   `info, i`\t Information on shard issues by issue type")
 
     @commands.command()
