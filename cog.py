@@ -26,7 +26,7 @@ class ShellCog:
     async def hello(self, ctx):
         await ctx.channel.send("oh hi")
 
-    @commands.command(alises=["ci"])
+    @commands.command(aliases=["ci"])
     async def clusterinfo(self, ctx, cluster_choice: int):
         onlinecount = 0
         found_count = 0
@@ -45,10 +45,10 @@ class ShellCog:
         raw_stat = requests.get("http://cdn.dvorak.host/test.json")
         # raw_stat = requests.get("https://status.rythmbot.co/raw")
         raw = json.loads(raw_stat.text)
-        print("finished array setup")
+        # print("finished array setup")
         for i in raw:
            if math.floor(int(i) / int(math.ceil(self.shardCount / 9))) == cluster_choice:
-               print("in cluster")
+               # print("in cluster")
                found_count=found_count+1
                if raw[str(i)] == "CONNECTED":
                    onlinecount = onlinecount + 1
@@ -77,8 +77,8 @@ class ShellCog:
                else:
                    missing.append(str(i))
         else:
-            print("not in cluster")
-        print("finished checks")
+            # print("not in cluster")
+        # print("finished checks")
         if onlinecount == found_count:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm Cluster {} is 100% Online\nThere are 0 issues".format(cluster_choice))
