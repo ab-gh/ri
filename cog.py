@@ -29,6 +29,7 @@ class ShellCog:
     @commands.command(alises=["ci"])
     async def clusterinfo(self, ctx, cluster_choice: int):
         onlinecount = 0
+        found_count = 0
         initi = []
         initd = []
         log = []
@@ -48,6 +49,7 @@ class ShellCog:
         for i in raw:
            if math.floor(int(i) / int(math.ceil(self.shardCount / 9))) == cluster_choice:
                print("in cluster")
+               found_count=found_count+1
                if raw[str(i)] == "CONNECTED":
                    onlinecount = onlinecount + 1
                elif raw[str(i)] == "INITIALIZING":
@@ -77,18 +79,18 @@ class ShellCog:
         else:
             print("not in cluster")
         print("finished checks")
-        if onlinecount == self.shardCount:
+        if onlinecount == found_countt:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
-                                  description="Rythm Cluster {}% is 100% Online\nThere are 0 issues".format(cluster_choice))
-            embed.set_author(name="Rythm Cluster {}% Status".format(cluster_choice))
+                                  description="Rythm Cluster {} is 100% Online\nThere are 0 issues".format(cluster_choice))
+            embed.set_author(name="Rythm Cluster {} Status".format(cluster_choice))
             embed.set_footer(text="a bot by ash#0001")
             await ctx.send(embed=embed)
         else:
             problems = self.shardCount - onlinecount
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
-                                  description="Rythm Cluster {}% is {}% Online\nThere are {} issues".format(cluster_choice,
+                                  description="Rythm Cluster {} is {}% Online\nThere are {} issues".format(cluster_choice,
                                       str(round((onlinecount / self.shardCount), 1) * 100), problems))
-            embed.set_author(name="Rythm Cluster {}% Status".format(cluster_choice))
+            embed.set_author(name="Rythm Cluster {} Status".format(cluster_choice))
             embed.set_footer(text="a bot by ash#0001")
             if len(queue) != 0:
                 embed.add_field(name="Reconnect queue", value=str((len(queue))), inline=False)
