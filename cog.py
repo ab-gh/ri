@@ -44,8 +44,10 @@ class ShellCog:
         raw_stat = requests.get("http://cdn.dvorak.host/test.json")
         # raw_stat = requests.get("https://status.rythmbot.co/raw")
         raw = json.loads(raw_stat.text)
+        print("finished array setup")
         for i in raw:
            if math.floor(int(i) / int(math.ceil(self.shardCount / 9))) == cluster_choice:
+               print("in cluster")
                if raw[str(i)] == "CONNECTED":
                    onlinecount = onlinecount + 1
                elif raw[str(i)] == "INITIALIZING":
@@ -72,8 +74,9 @@ class ShellCog:
                    queue.append(str(i))
                else:
                    missing.append(str(i))
-           else:
-               return
+        else:
+            print("not in cluster")
+            return
         if onlinecount == self.shardCount:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm Cluster {}% is 100% Online\nThere are 0 issues".format(cluster_choice))
