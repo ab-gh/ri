@@ -76,7 +76,6 @@ class ShellCog:
                    missing.append(str(i))
         else:
             print("not in cluster")
-            return
         print("finished checks")
         if onlinecount == self.shardCount:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
