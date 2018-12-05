@@ -79,7 +79,7 @@ class ShellCog:
         else:
             print("not in cluster")
         print("finished checks")
-        if onlinecount == found_countt:
+        if onlinecount == found_count:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm Cluster {} is 100% Online\nThere are 0 issues".format(cluster_choice))
             embed.set_author(name="Rythm Cluster {} Status".format(cluster_choice))
