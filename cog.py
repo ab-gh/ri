@@ -198,8 +198,8 @@ class ShellCog:
     async def status(self, ctx):
         await ctx.channel.send('Loading...')
         onlinecount = 0
-        # raw_stat = requests.get("https://status.rythmbot.co/raw")
-        raw_stat = requests.get("http://cdn.dvorak.host/test.json")
+        raw_stat = requests.get("https://status.rythmbot.co/raw")
+        # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
         raw = json.loads(raw_stat.text)
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
