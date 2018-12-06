@@ -233,7 +233,6 @@ class ShellCog:
             embed.set_author(name="Rythm Status")
             embed.set_footer(text="a bot by ash#0001")
             for selection in status_dict:
-                print(selection)
                 if len(status_dict[selection]) != 0:
                     embed.add_field(name=string_dict[selection], value=str((len(status_dict[selection]))), inline=False)
                 elif len(missing) != 0:
