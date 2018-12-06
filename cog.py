@@ -7,11 +7,14 @@ import math
 import datetime
 
 
+
 class ShellCog:
 
     def __init__(self, bot):
         self.bot = bot
         self.shardCount = 2304
+        ## testing flag
+        self.testing = 0
 
     @commands.command()
     async def help(self, ctx):
@@ -153,8 +156,10 @@ class ShellCog:
         await ctx.channel.send('Loading...')
         onlinecount = 0
         issues_array = []
-        # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-        raw_stat = requests.get("https://status.rythmbot.co/raw")
+        if self.testing == 0:
+            raw_stat = requests.get("https://status.rythmbot.co/raw")
+        else:
+            raw_stat = requests.get("http://cdn.dvorak.host/test.json")
         raw = json.loads(raw_stat.text)
         for i in raw:
             if raw[str(i)] == "CONNECTED":
@@ -163,70 +168,30 @@ class ShellCog:
                 shard_id = int(i)
                 cluster_id = math.floor(int(shard_id) / int(math.ceil(self.shardCount / 9)))
                 issues_array.append([shard_id, cluster_id])
-        cluster0 = []
-        cluster1 = []
-        cluster2 = []
-        cluster3 = []
-        cluster4 = []
-        cluster5 = []
-        cluster6 = []
-        cluster7 = []
-        cluster8 = []
-        cluster9 = []
-        for j in issues_array:
-            if (j[1]) == 0:
-                cluster0.append(j)
-            if (j[1]) == 1:
-                cluster1.append(j)
-            if (j[1]) == 2:
-                cluster2.append(j)
-            if (j[1]) == 3:
-                cluster3.append(j)
-            if (j[1]) == 4:
-                cluster4.append(j)
-            if (j[1]) == 5:
-                cluster5.append(j)
-            if (j[1]) == 6:
-                cluster6.append(j)
-            if (j[1]) == 7:
-                cluster7.append(j)
-            if (j[1]) == 8:
-                cluster8.append(j)
-            if (j[1]) == 9:
-                cluster9.append(j)
+        clusters = []
+        clusters.extend([[] for i in range(9)])
+        for k in issues_array:
+            appender=int(k[1])
+            clusters[appender].append([k[0]])
         problems = self.shardCount - onlinecount
         embed = discord.Embed(colour=discord.Colour(0xd0892f),
                               description="Rythm is {}% Online\nThere are {} issues".format(
                                   str(round((onlinecount / self.shardCount), 1) * 100), problems))
         embed.set_author(name="Rythm Cluster Status")
-        if len(cluster0) != 0:
-            embed.add_field(name="Cluster 0", value=str((len(cluster0))), inline=False)
-        if len(cluster1) != 0:
-            embed.add_field(name="Cluster 1", value=str((len(cluster1))), inline=False)
-        if len(cluster2) != 0:
-            embed.add_field(name="Cluster 2", value=str((len(cluster2))), inline=False)
-        if len(cluster3) != 0:
-            embed.add_field(name="Cluster 3", value=str((len(cluster3))), inline=False)
-        if len(cluster4) != 0:
-            embed.add_field(name="Cluster 4", value=str((len(cluster4))), inline=False)
-        if len(cluster5) != 0:
-            embed.add_field(name="Cluster 5", value=str((len(cluster5))), inline=False)
-        if len(cluster6) != 0:
-            embed.add_field(name="Cluster 6", value=str((len(cluster6))), inline=False)
-        if len(cluster7) != 0:
-            embed.add_field(name="Cluster 7", value=str((len(cluster7))), inline=False)
-        if len(cluster8) != 0:
-            embed.add_field(name="Cluster 8", value=str((len(cluster8))), inline=False)
-        if len(cluster9) != 0:
-            embed.add_field(name="Cluster 9", value=str((len(cluster9))), inline=False)
+        iterative=0
+        for j in clusters:
+            if len(j) != 0:
+                cluster_name="Cluster "+str(iterative)
+                embed.add_field(name=cluster_name, value=str((len(j))), inline=False)
+            iterative=iterative+1
         embed.set_footer(text="a bot by ash#0001")
-        time_to_seconds = int(problems * 6.5)
-        time_in_minutes = str(datetime.timedelta(seconds=time_to_seconds))
-        embed.add_field(name="Expected Resolution Time", value=time_in_minutes, inline=False)
+        if problems != 0:
+            time_to_seconds = int(problems * 6.5)
+            time_in_minutes = str(datetime.timedelta(seconds=time_to_seconds))
+            embed.add_field(name="Expected Resolution Time", value=time_in_minutes, inline=False)
         await ctx.send(embed=embed)
 
     # RYTHM INFO
-
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
         await ctx.channel.send('Loading...')
