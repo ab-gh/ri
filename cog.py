@@ -153,8 +153,8 @@ class ShellCog:
         await ctx.channel.send('Loading...')
         onlinecount = 0
         issues_array = []
-        # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-        raw_stat = requests.get("https://status.rythmbot.co/raw")
+        raw_stat = requests.get("http://cdn.dvorak.host/test.json")
+        # raw_stat = requests.get("https://status.rythmbot.co/raw")
         raw = json.loads(raw_stat.text)
         for i in raw:
             if raw[str(i)] == "CONNECTED":
