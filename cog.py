@@ -227,9 +227,7 @@ class ShellCog:
             await ctx.send(embed=embed)
         else:
             problems = self.shardCount - onlinecount
-            embed = discord.Embed(colour=discord.Colour(0xd0892f),
-                                  description="Rythm is {}% Online\nThere are {} issues".format(
-                                      str(round((onlinecount / self.shardCount)*100), 1), problems))
+            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(round(((onlinecount / self.shardCount)*100), 1), problems))
             embed.set_author(name="Rythm Status")
             embed.set_footer(text="a bot by ash#0001")
             for selection in status_dict:
