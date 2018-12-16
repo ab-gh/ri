@@ -31,7 +31,7 @@ class ShellCog:
 
     @commands.command(aliases=["ci"])
     async def clusterinfo(self, ctx, cluster_choice: int):
-        if cluster_choice is None:
+        if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
         await ctx.channel.send('Loading...')
         onlinecount = 0
