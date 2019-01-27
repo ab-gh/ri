@@ -18,12 +18,16 @@ class ShellCog:
 
     @commands.command()
     async def help(self, ctx):
-        await ctx.channel.send("**Command**\t\t\t\t\t\t\t**Aliases**\t\t**Description**\n`ri hello`\n`ri "
-                               "help`\t\t\t\t\t\t\t\tNone\t\t  This command\n`ri guild <guild_ID>`\t`g`\t\t\t\t  "
-                               "Shard and Cluster information from the given Guild ID\n`ri shard "
-                               "<shard_ID>`\t`s`\t\t\t\t  Shard and Cluster information from the given Shard ID\n`ri "
-                               "cluster`\t\t\t\t\t\t `c`\t\t\t\t  Information on shard issues sorted by cluster\n`ri "
-                               "status`\t\t\t\t\t\t   `info, i`\t Information on shard issues by issue type")
+        embed = discord.Embed()
+
+        embed.add_field(name="Command",
+                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c]\nri [status| i]\nri [clusterinfo | ci] {cID}\nri check",
+                        inline=True)
+        embed.add_field(name="Use",
+                        value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues grouped by cluster\nInfo on shard issues by issue type \nInfo on shard issues about a cluster \nOutputs the loaded shards ",
+                        inline=True)
+
+        await ctx.send(embed=embed)
 
     @commands.command()
     async def hello(self, ctx):
@@ -33,7 +37,7 @@ class ShellCog:
     async def clusterinfo(self, ctx, cluster_choice: int):
         if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
-        await ctx.channel.send('Loading...')
+        await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         found_count = 0
         initi = []
@@ -128,7 +132,7 @@ class ShellCog:
 
     @commands.command(aliases=["g"])
     async def guild(self, ctx, guild_id: int):
-        await ctx.channel.send('Loading...')
+        await ctx.channel.send('Loading...', delete_after=3)
         url_combined = str("https://web.rythmbot.co/ajax/shard/" + str(guild_id))
         page = requests.get(url_combined)
         python_obj = json.loads(page.text)
@@ -145,7 +149,7 @@ class ShellCog:
 
     @commands.command(aliases=["s"])
     async def shard(self, ctx, shard_id: int):
-        await ctx.channel.send('Loading...')
+        await ctx.channel.send('Loading...', delete_after=3)
         embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Info from Shard")
         embed.add_field(name="Shard", value=str(shard_id), inline=False)
         embed.add_field(name="Cluster", value=str(math.floor(int(shard_id) / int(math.ceil(self.shardCount / 9)))),
@@ -157,7 +161,7 @@ class ShellCog:
 
     @commands.command(aliases=["c"])
     async def cluster(self, ctx):
-        await ctx.channel.send('Loading...')
+        await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         issues_array = []
         if self.testing == 0:
@@ -169,7 +173,7 @@ class ShellCog:
             if raw[str(shard_status)] == "CONNECTED":
                 onlinecount += 1
             else:
-                # delete: shard_id = int(shard_status)
+                shard_id = int(shard_status)
                 cluster_id = math.floor(int(shard_id) / int(math.ceil(self.shardCount / 9)))
                 issues_array.append([int(shard_id), cluster_id])
         clusters = []
@@ -198,7 +202,7 @@ class ShellCog:
     # RYTHM INFO
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
-        await ctx.channel.send('Loading...')
+        await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         raw_stat = requests.get("https://status.rythmbot.co/raw")
         # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
@@ -215,12 +219,19 @@ class ShellCog:
                        "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue"}
         missing = []
         for i in raw:
+            #print(raw[str(i)])
             if raw[str(i)] == "CONNECTED":
                 onlinecount += 1
             elif raw[str(i)] in status_dict:
+                print(raw[str(i)])
                 status_dict[raw[str(i)]].append(str(i))
             else:
+                print(raw[str(i)])
+                print("missing")
                 missing.append(str(i))
+        print(status_dict)
+        print(missing)
+        print("online: ", onlinecount)
         if onlinecount == self.shardCount:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm is 100% Online\nThere are 0 issues")
@@ -229,6 +240,7 @@ class ShellCog:
             await ctx.send(embed=embed)
         else:
             problems = self.shardCount - onlinecount
+            print("problems: ", problems)
             embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(round(((onlinecount / self.shardCount)*100), 1), problems))
             embed.set_author(name="Rythm Status")
             embed.set_footer(text="a bot by ash#0001")
@@ -240,6 +252,21 @@ class ShellCog:
             time_in_minutes = str(datetime.timedelta(seconds=int(problems * 6.5)))
             embed.add_field(name="Expected Resolution Time", value=time_in_minutes, inline=False)
             await ctx.send(embed=embed)
+
+    # RYTHM CHECK
+    @commands.command()
+    async def check(self, ctx):
+        await ctx.channel.send('Loading...', delete_after=3)
+        onlinecount = 0
+        raw_stat = requests.get("https://status.rythmbot.co/raw")
+        # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
+        raw = json.loads(raw_stat.text)
+        shards_loaded = 0
+        for i in raw:
+            shards_loaded += 1
+        message = str(shards_loaded) + " shards loaded!"
+        await ctx.send(message)
+
 
 def setup(bot):
     bot.remove_command("help")
