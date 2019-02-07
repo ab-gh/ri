@@ -185,7 +185,7 @@ class ShellCog:
         problems = self.shardCount - onlinecount
         embed = discord.Embed(colour=discord.Colour(0xd0892f),
                               description="Rythm is {}% Online\nThere are {} issues".format(
-                                  str(round((onlinecount / self.shardCount), 1) * 100), problems))
+                                  str(round((onlinecount / self.shardCount), 4) * 100), problems))
         embed.set_author(name="Rythm Cluster Status")
         iterative = 0
         for j in clusters:
@@ -241,7 +241,7 @@ class ShellCog:
         else:
             problems = self.shardCount - onlinecount
             print("problems: ", problems)
-            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(round(((onlinecount / self.shardCount)*100), 1), problems))
+            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(round(((onlinecount / self.shardCount)*100), 4), problems))
             embed.set_author(name="Rythm Status")
             embed.set_footer(text="a bot by ash#0001")
             for selection in status_dict:
