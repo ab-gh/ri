@@ -5,6 +5,8 @@ import math
 
 import discord
 import requests
+import aiohttp
+import asyncio
 from discord.ext import commands
 
 
@@ -15,6 +17,29 @@ class ShellCog:
         self.shardCount = 2304
         ## testing flag
         self.testing = 0
+
+    async def fetch(self, session, url, ctx):
+        async with session.get(url) as response:
+            if response.status == 200:
+                return await response.text()
+            else:
+                message = "Error: HTTP error " + str(response.status)
+                await ctx.channel.send(message)
+
+
+    async def getJSON(self, ctx):
+        async with aiohttp.ClientSession() as session:
+            raw = await self.fetch(session, "https://status.rythmbot.co/raw", ctx)
+            raw_json = json.loads(raw)
+            return raw_json
+
+    async def getAJAX(self, ctx, guild_id):
+        async with aiohttp.ClientSession() as session:
+            combined = str("https://web.rythmbot.co/ajax/shard/" + str(guild_id))
+            ajax = await self.fetch(session, combined, ctx)
+            ajax_json = json.loads(ajax)
+            return ajax_json
+
 
     # HELP
     @commands.command()
@@ -45,6 +70,8 @@ class ShellCog:
             print("\ncommandError\t", error)
 
     # RYTHM CLUSTER INFO
+    # AIOHTTP DONE
+    # NEEDS REFACTOR
     @commands.command(aliases=["c"])
     async def cluster(self, ctx, *, cluster_choice):
         if not cluster_choice:
@@ -65,8 +92,7 @@ class ShellCog:
         queue = []
         missing = []
         # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-        raw_stat = requests.get("https://status.rythmbot.co/raw")
-        raw = json.loads(raw_stat.text)
+        raw = await self.getJSON(ctx)
         # print("finished array setup")
         for i in raw:
             if math.floor(int(i) / int(math.ceil(self.shardCount / 9))) == cluster_choice:
@@ -143,24 +169,24 @@ class ShellCog:
             await ctx.send(embed=embed)
 
     # RYTHM GUILD INFO
+    # AIOHTTP DONE
     @commands.command(aliases=["g"])
     async def guild(self, ctx, guild_id: int):
         await ctx.channel.send('Loading...', delete_after=3)
-        url_combined = str("https://web.rythmbot.co/ajax/shard/" + str(guild_id))
-        page = requests.get(url_combined)
-        python_obj = json.loads(page.text)
+        python_obj = await self.getAJAX(ctx, guild_id)
         shard_id = int(python_obj["shard"])
         cluster_id = int(python_obj["cluster"])
         embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Info from Guild")
         embed.add_field(name="Guild", value=str(guild_id), inline=False)
         embed.add_field(name="Shard", value=str(shard_id), inline=False)
         embed.add_field(name="Cluster", value=str(cluster_id), inline=False)
-        raw_stat = requests.get("https://status.rythmbot.co/raw")
-        embed.add_field(name="Status", value=json.loads(raw_stat.text)[str(shard_id)], inline=False)
+        raw_stat = await self.getJSON(ctx)
+        embed.add_field(name="Status", value=raw_stat[str(shard_id)], inline=False)
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
     # RYTHM SHARD INFO
+    # AIOHTTP DONE
     @commands.command(aliases=["s"])
     async def shard(self, ctx, shard_id: int):
         await ctx.channel.send('Loading...', delete_after=3)
@@ -168,22 +194,23 @@ class ShellCog:
         embed.add_field(name="Shard", value=str(shard_id), inline=False)
         embed.add_field(name="Cluster", value=str(math.floor(int(shard_id) / int(math.ceil(self.shardCount / 9)))),
                         inline=False)
-        raw_stat = requests.get("https://status.rythmbot.co/raw")
-        embed.add_field(name="Status", value=json.loads(raw_stat.text)[str(shard_id)], inline=False)
+        raw_stat = await self.getJSON(ctx)
+        embed.add_field(name="Status", value=raw_stat[str(shard_id)], inline=False)
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
     # RYTHM CLUSTER INFO
+    # AIOHTTP DONE
     @commands.command(aliases=["ci"])
     async def clusterinfo(self, ctx):
         await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         issues_array = []
         if self.testing == 0:
-            raw_stat = requests.get("https://status.rythmbot.co/raw")
+            raw = await self.getJSON(ctx)
         else:
             raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-        raw = json.loads(raw_stat.text)
+            raw = json.loads(raw_stat.text)
         for shard_status in raw:
             if raw[str(shard_status)] == "CONNECTED":
                 onlinecount += 1
@@ -216,15 +243,14 @@ class ShellCog:
 
     # RYTHM INFO
     # REFACTORED !
+    # AIOHTTP DONE
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
         await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         raw_stat = requests.get("https://status.rythmbot.co/raw")
         # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-        if str(raw_stat)=="<Response [500]>":
-            await ctx.channel.send('Statuspage is offline!')
-        raw = json.loads(raw_stat.text)
+        raw = await self.getJSON(ctx)
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
                        "RECONNECTING": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
@@ -247,9 +273,9 @@ class ShellCog:
                 print(raw[str(i)])
                 print("missing")
                 missing.append(str(i))
-        print(status_dict)
-        print(missing)
-        print("online: ", onlinecount)
+        #print(status_dict)
+        #print(missing)
+        #print("online: ", onlinecount)
         if onlinecount == self.shardCount:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm is 100% Online\nThere are 0 issues")
@@ -272,28 +298,22 @@ class ShellCog:
             await ctx.send(embed=embed)
 
     # RYTHM CHECK
+    # AIOHTTP DONE
     @commands.command()
     async def check(self, ctx):
         await ctx.channel.send('Loading...', delete_after=3)
-        onlinecount = 0
-        raw_stat = requests.get("https://status.rythmbot.co/raw")
-        # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-        if int(raw_stat.status_code)==500:
-            await ctx.channel.send('Error: HTTP 500 Error: Internal Server Error')
-            cat="https://http.cat/"+str(int(raw_stat.status_code))
-            await ctx.channel.send(cat)
-        elif int(raw_stat.status_code)==200:
-            raw = json.loads(raw_stat.text)
-            shards_loaded = 0
-            for i in raw:
-                shards_loaded += 1
-            message = str(shards_loaded) + " shards seen and loaded!"
-            await ctx.send(message)
-        else:
-            message="Error: HTTP Error: "+ str(raw_stat.status_code)
-            await ctx.channel.send(message)
-            cat = "https://http.cat/" + str(int(raw_stat.status_code))
-            await ctx.channel.send(cat)
+        raw = await self.getJSON(ctx)
+        shards_loaded = 0
+        for i in raw:
+            shards_loaded += 1
+        message = str(shards_loaded) + " shards seen and loaded!"
+        await ctx.send(message)
+
+
+
+
+
+
 
 
 
