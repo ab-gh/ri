@@ -215,6 +215,7 @@ class ShellCog:
         await ctx.send(embed=embed)
 
     # RYTHM INFO
+    # REFACTORED !
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
         await ctx.channel.send('Loading...', delete_after=3)
