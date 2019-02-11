@@ -16,12 +16,13 @@ class ShellCog:
         ## testing flag
         self.testing = 0
 
+    # HELP
     @commands.command()
     async def help(self, ctx):
         embed = discord.Embed()
 
         embed.add_field(name="Command",
-                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status| i]\nri [clusterinfo | ci] {cID}\nri check",
+                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status| i]\nri [clusterinfo | ci]\nri check",
                         inline=True)
         embed.add_field(name="Use",
                         value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues about a cluster\nInfo on shard issues by issue type \nInfo on shard issues grouped by cluster \nOutputs the loaded shards ",
@@ -29,10 +30,12 @@ class ShellCog:
 
         await ctx.send(embed=embed)
 
+    # PING
     @commands.command()
     async def hello(self, ctx):
         await ctx.channel.send("oh hi")
 
+    # ERROR HANDLING
     async def on_command_error(self, ctx, error):
         print("\n")
         if isinstance(error, commands.MissingRequiredArgument):
@@ -41,6 +44,7 @@ class ShellCog:
             await ctx.channel.send(message)
             print("\ncommandError\t", error)
 
+    # RYTHM CLUSTER INFO
     @commands.command(aliases=["c"])
     async def cluster(self, ctx, *, cluster_choice):
         if not cluster_choice:
@@ -138,6 +142,7 @@ class ShellCog:
                 embed.add_field(name="Data missing", value=str((len(missing))), inline=False)
             await ctx.send(embed=embed)
 
+    # RYTHM GUILD INFO
     @commands.command(aliases=["g"])
     async def guild(self, ctx, guild_id: int):
         await ctx.channel.send('Loading...', delete_after=3)
@@ -155,6 +160,7 @@ class ShellCog:
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
+    # RYTHM SHARD INFO
     @commands.command(aliases=["s"])
     async def shard(self, ctx, shard_id: int):
         await ctx.channel.send('Loading...', delete_after=3)
@@ -167,6 +173,7 @@ class ShellCog:
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
+    # RYTHM CLUSTER INFO
     @commands.command(aliases=["ci"])
     async def clusterinfo(self, ctx):
         await ctx.channel.send('Loading...', delete_after=3)
