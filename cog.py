@@ -206,6 +206,8 @@ class ShellCog:
         onlinecount = 0
         raw_stat = requests.get("https://status.rythmbot.co/raw")
         # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
+        if str(raw_stat)=="<Response [500]>":
+            await ctx.channel.send('Statuspage is offline!')
         raw = json.loads(raw_stat.text)
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
@@ -259,6 +261,8 @@ class ShellCog:
         await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         raw_stat = requests.get("https://status.rythmbot.co/raw")
+        if str(raw_stat)=="<Response [500]>":
+            await ctx.channel.send('Something went wrong...')
         # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
         raw = json.loads(raw_stat.text)
         shards_loaded = 0
