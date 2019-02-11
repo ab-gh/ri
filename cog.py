@@ -21,10 +21,10 @@ class ShellCog:
         embed = discord.Embed()
 
         embed.add_field(name="Command",
-                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c]\nri [status| i]\nri [clusterinfo | ci] {cID}\nri check",
+                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status| i]\nri [clusterinfo | ci] {cID}\nri check",
                         inline=True)
         embed.add_field(name="Use",
-                        value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues grouped by cluster\nInfo on shard issues by issue type \nInfo on shard issues about a cluster \nOutputs the loaded shards ",
+                        value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues about a cluster\nInfo on shard issues by issue type \nInfo on shard issues grouped by cluster \nOutputs the loaded shards ",
                         inline=True)
 
         await ctx.send(embed=embed)
@@ -33,8 +33,16 @@ class ShellCog:
     async def hello(self, ctx):
         await ctx.channel.send("oh hi")
 
-    @commands.command(aliases=["ci"])
-    async def clusterinfo(self, ctx, cluster_choice: int):
+    async def on_command_error(self, ctx, error):
+        print("\n")
+        if isinstance(error, commands.MissingRequiredArgument):
+            errorname=str(ctx.command)
+            message = "Error: You need to specify a " + errorname + " ID."
+            await ctx.channel.send(message)
+            print("\ncommandError\t", error)
+
+    @commands.command(aliases=["c"])
+    async def cluster(self, ctx, *, cluster_choice):
         if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
         await ctx.channel.send('Loading...', delete_after=3)
@@ -159,8 +167,8 @@ class ShellCog:
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
-    @commands.command(aliases=["c"])
-    async def cluster(self, ctx):
+    @commands.command(aliases=["ci"])
+    async def clusterinfo(self, ctx):
         await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         issues_array = []
@@ -261,15 +269,24 @@ class ShellCog:
         await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         raw_stat = requests.get("https://status.rythmbot.co/raw")
-        if str(raw_stat)=="<Response [500]>":
-            await ctx.channel.send('Something went wrong...')
         # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-        raw = json.loads(raw_stat.text)
-        shards_loaded = 0
-        for i in raw:
-            shards_loaded += 1
-        message = str(shards_loaded) + " shards loaded!"
-        await ctx.send(message)
+        if int(raw_stat.status_code)==500:
+            await ctx.channel.send('Error: HTTP 500 Error: Internal Server Error')
+            cat="https://http.cat/"+str(int(raw_stat.status_code))
+            await ctx.channel.send(cat)
+        elif int(raw_stat.status_code)==200:
+            raw = json.loads(raw_stat.text)
+            shards_loaded = 0
+            for i in raw:
+                shards_loaded += 1
+            message = str(shards_loaded) + " shards seen and loaded!"
+            await ctx.send(message)
+        else:
+            message="Error: HTTP Error: "+ str(raw_stat.status_code)
+            await ctx.channel.send(message)
+            cat = "https://http.cat/" + str(int(raw_stat.status_code))
+            await ctx.channel.send(cat)
+
 
 
 def setup(bot):
