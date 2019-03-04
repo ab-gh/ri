@@ -2,6 +2,7 @@ __authors__ = 'aejb'
 import datetime
 import json
 import math
+import numpy
 
 import discord
 import requests
@@ -17,6 +18,7 @@ class ShellCog:
         self.shardCount = 2304
         ## testing flag
         self.testing = 0
+        self.stuck_array = []
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
@@ -29,7 +31,10 @@ class ShellCog:
 
     async def getJSON(self, ctx):
         async with aiohttp.ClientSession() as session:
-            raw = await self.fetch(session, "https://status.rythmbot.co/raw", ctx)
+            if self.testing == 0:
+                raw = await self.fetch(session, "https://status.rythmbot.co/raw", ctx)
+            else:
+                raw = await self.fetch(session, "http://cdn.dvorak.host/test.json", ctx)
             raw_json = json.loads(raw)
             return raw_json
 
@@ -47,7 +52,7 @@ class ShellCog:
         embed = discord.Embed()
 
         embed.add_field(name="Command",
-                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status| i]\nri [clusterinfo | ci]\nri check",
+                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status | i]\nri [clusterinfo | ci]\nri check",
                         inline=True)
         embed.add_field(name="Use",
                         value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues about a cluster\nInfo on shard issues by issue type \nInfo on shard issues grouped by cluster \nOutputs the loaded shards ",
@@ -220,7 +225,6 @@ class ShellCog:
                 issues_array.append([int(shard_id), cluster_id])
         clusters = []
         clusters.extend([[] for _ in range(9)])
-
         for shard_issue in issues_array:
             appender = int(shard_issue[1])
             clusters[appender].append([shard_issue[0]])
@@ -248,7 +252,7 @@ class ShellCog:
     async def status(self, ctx):
         await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
-        raw_stat = requests.get("https://status.rythmbot.co/raw")
+        # raw_stat = requests.get("https://status.rythmbot.co/raw")
         # raw_stat = requests.get("http://cdn.dvorak.host/test.json")
         raw = await self.getJSON(ctx)
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
@@ -273,9 +277,6 @@ class ShellCog:
                 print(raw[str(i)])
                 print("missing")
                 missing.append(str(i))
-        #print(status_dict)
-        #print(missing)
-        #print("online: ", onlinecount)
         if onlinecount == self.shardCount:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm is 100% Online\nThere are 0 issues")
@@ -309,10 +310,45 @@ class ShellCog:
         message = str(shards_loaded) + " shards seen and loaded!"
         await ctx.send(message)
 
+    @commands.command()
+    async def clear(self, ctx):
+        self.stuck_array = []
+        await ctx.channel.send('Stuck shard array cleared!', delete_after=3)
 
 
-
-
+    @commands.command()
+    async def stuck(self, ctx):
+        await ctx.channel.send('Loading...', delete_after=3)
+        onlinecount = 0
+        raw = await self.getJSON(ctx)
+        status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
+                       "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
+                       "RECONNECTING": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
+                       "RECONNECT_QUEUED": []}
+        missing = []
+        stuck_compare = []
+        for i in raw:
+            if raw[str(i)] == "CONNECTED":
+                onlinecount += 1
+            elif raw[str(i)] in status_dict:
+                stuck_compare.append(str(i))
+            else:
+                missing.append(str(i))
+        compared_list = numpy.intersect1d(stuck_compare, self.stuck_array)
+        if len(compared_list) > 0:
+            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Stuck shards")
+            embed.set_author(name="Rythm Status")
+            embed.set_footer(text="a bot by ash#0001")
+            pr = "\n".join(compared_list)
+            embed.add_field(name="Shard List", value=pr, inline=False)
+            await ctx.send(embed=embed)
+        elif len(compared_list) == 0:
+            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="There are 0 stuck shards")
+            embed.add_field(name="Try running the command again in a few minutes", value="This will identify any stuck shards", inline=False)
+            embed.set_author(name="Rythm Status")
+            embed.set_footer(text="a bot by ash#0001")
+            await ctx.send(embed=embed)
+        self.stuck_array = stuck_compare
 
 
 
