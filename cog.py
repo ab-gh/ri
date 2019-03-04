@@ -11,7 +11,7 @@ import asyncio
 from discord.ext import commands
 
 
-class ShellCog:
+class ShellCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
@@ -27,7 +27,6 @@ class ShellCog:
             else:
                 message = "Error: HTTP error " + str(response.status)
                 await ctx.channel.send(message)
-
 
     async def getJSON(self, ctx):
         async with aiohttp.ClientSession() as session:
@@ -60,12 +59,10 @@ class ShellCog:
 
         await ctx.send(embed=embed)
 
-    # PING
     @commands.command()
     async def hello(self, ctx):
         await ctx.channel.send("oh hi")
 
-    # ERROR HANDLING
     async def on_command_error(self, ctx, error):
         print("\n")
         if isinstance(error, commands.MissingRequiredArgument):
@@ -74,18 +71,11 @@ class ShellCog:
             await ctx.channel.send(message)
             print("\ncommandError\t", error)
 
-    # RYTHM CLUSTER INFO
-    # AIOHTTP DONE
-    # NEEDS REFACTOR
-    @commands.command(aliases=["c"])
-    async def cluster(self, ctx, *, cluster_choice):
-        if not cluster_choice:
-            await ctx.channel.send('You need to specify cluster number')
-        await ctx.channel.send('Loading...', delete_after=3)
+    async def info(self, ctx, cluster_choice):
         raw = await self.getJSON(ctx)
         found_count = 0
-        onlinecount = 0
-        missing  = []
+        online_count = 0
+        missing_array = []
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
                        "RECONNECTING": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
@@ -97,35 +87,54 @@ class ShellCog:
                        "ATTEMPTING_TO_RECONNECT": "Attempting to reconnect",
                        "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue"}
         for i in raw:
-            if math.floor(int(i) / int(math.ceil(self.shardCount / 9))) == cluster_choice:
-                found_count = found_count + 1
+            if cluster_choice == "all" or math.floor(int(i) / int(math.ceil(self.shardCount / 9))) == cluster_choice:
                 if raw[str(i)] == "CONNECTED":
-                    onlinecount += 1
+                    online_count += 1
                 elif raw[str(i)] in status_dict:
                     status_dict[raw[str(i)]].append(str(i))
                 else:
-                    missing.append(str(i))
-        if onlinecount == found_count:
+                    missing_array.append(str(i))
+        if cluster_choice == "all":
+            command_type = ""
+        else:
+            command_type = "Cluster " + cluster_choice
+        if online_count == found_count:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
-                                  description="Rythm Cluster {} is 100% Online\nThere are 0 issues".format(
-                                      cluster_choice))
-            embed.set_author(name="Rythm Cluster {} Status".format(cluster_choice))
+                                  description="Rythm {} is 100% Online\nThere are 0 issues".format(
+                                      command_type))
+            embed.set_author(name="Rythm {} Status".format(command_type))
             embed.set_footer(text="a bot by ash#0001")
             await ctx.send(embed=embed)
         else:
-            problems = found_count - onlinecount
+            if cluster_choice == "all":
+                problems = self.shardCount - online_count
+            else:
+                problems = found_count - online_count
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
-                                  description="Rythm Cluster {} is {}% Online\nThere are {} issues".format(
-                                      cluster_choice,
-                                      str(round((onlinecount / self.shardCount), 1) * 100), problems))
-            embed.set_author(name="Rythm Cluster {} Status".format(cluster_choice))
+                                  description="Rythm {} is {}% Online\nThere are {} issues".format(
+                                      command_type,
+                                      str(round((online_count / self.shardCount), 1) * 100), problems))
+            embed.set_author(name="Rythm {} Status".format(command_type))
             embed.set_footer(text="a bot by ash#0001")
             for selection in status_dict:
                 if len(status_dict[selection]) != 0:
                     embed.add_field(name=string_dict[selection], value=str((len(status_dict[selection]))), inline=False)
-                elif len(missing) != 0:
-                    embed.add_field(name="Data missing", value=str((len(missing))), inline=False)
+                elif len(missing_array) != 0:
+                    embed.add_field(name="Data missing", value=str((len(missing_array))), inline=False)
             await ctx.send(embed=embed)
+    # cluster info
+    @commands.command(aliases=["c"])
+    async def cluster(self, ctx, *, cluster_choice):
+        if not cluster_choice:
+            await ctx.channel.send('You need to specify cluster number')
+        await ctx.channel.send('Loading...', delete_after=3)
+        await self.info(ctx, cluster_choice)
+    # info
+    @commands.command(aliases=["info", "i"])
+    async def status(self, ctx):
+        await ctx.channel.send('Loading...', delete_after=3)
+        cluster_choice = "all"
+        await self.info(ctx, cluster_choice)
 
     # RYTHM GUILD INFO
     # AIOHTTP DONE
@@ -165,11 +174,7 @@ class ShellCog:
         await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         issues_array = []
-        if self.testing == 0:
-            raw = await self.getJSON(ctx)
-        else:
-            raw_stat = requests.get("http://cdn.dvorak.host/test.json")
-            raw = json.loads(raw_stat.text)
+        raw = await self.getJSON(ctx)
         for shard_status in raw:
             if raw[str(shard_status)] == "CONNECTED":
                 onlinecount += 1
@@ -199,52 +204,6 @@ class ShellCog:
             embed.add_field(name="Expected Resolution Time", value=time_in_minutes, inline=False)
         await ctx.send(embed=embed)
 
-    # RYTHM INFO
-    # REFACTORED !
-    # AIOHTTP DONE
-    @commands.command(aliases=["info", "i"])
-    async def status(self, ctx):
-        await ctx.channel.send('Loading...', delete_after=3)
-        onlinecount = 0
-        raw = await self.getJSON(ctx)
-        status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
-                       "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
-                       "RECONNECTING": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
-                       "RECONNECT_QUEUED": []}
-        string_dict = {"INITIALIZING": "Initialising", "INITIALIZED": "Initialised", "LOGGING_IN": "Logging in",
-                       "CONNECTING_TO_WEBSOCKET": "connecting to websocket", "IDENTIFYING_SESSION": "Identifying",
-                       "AWAITING_LOGIN_CONFIRMATION": "Awaiting confirmation",
-                       "LOADING_SUBSYSTEMS": "Loading subsystems", "RECONNECTING": "Reconnecting",
-                       "ATTEMPTING_TO_RECONNECT": "Attempting to reconnect",
-                       "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue"}
-        missing = []
-        for i in raw:
-            if raw[str(i)] == "CONNECTED":
-                onlinecount += 1
-            elif raw[str(i)] in status_dict:
-                status_dict[raw[str(i)]].append(str(i))
-            else:
-                missing.append(str(i))
-        if onlinecount == self.shardCount:
-            embed = discord.Embed(colour=discord.Colour(0xd0892f),
-                                  description="Rythm is 100% Online\nThere are 0 issues")
-            embed.set_author(name="Rythm Status")
-            embed.set_footer(text="a bot by ash#0001")
-            await ctx.send(embed=embed)
-        else:
-            problems = self.shardCount - onlinecount
-            embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Rythm is {}% Online\nThere are {} issues".format(round(((onlinecount / self.shardCount)*100), 4), problems))
-            embed.set_author(name="Rythm Status")
-            embed.set_footer(text="a bot by ash#0001")
-            for selection in status_dict:
-                if len(status_dict[selection]) != 0:
-                    embed.add_field(name=string_dict[selection], value=str((len(status_dict[selection]))), inline=False)
-                elif len(missing) != 0:
-                    embed.add_field(name="Data missing", value=str((len(missing))), inline=False)
-            time_in_minutes = str(datetime.timedelta(seconds=int(problems * 6.5)))
-            embed.add_field(name="Expected Resolution Time", value=time_in_minutes, inline=False)
-            await ctx.send(embed=embed)
-
     # RYTHM CHECK
     # AIOHTTP DONE
     @commands.command()
@@ -261,7 +220,6 @@ class ShellCog:
     async def clear(self, ctx):
         self.stuck_array = []
         await ctx.channel.send('Stuck shard array cleared!', delete_after=3)
-
 
     @commands.command()
     async def stuck(self, ctx):
