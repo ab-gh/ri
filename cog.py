@@ -16,7 +16,6 @@ class ShellCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.shardCount = 2304
-        ## testing flag
         self.testing = 0
         self.stuck_array = []
 
@@ -44,8 +43,6 @@ class ShellCog(commands.Cog):
             ajax_json = json.loads(ajax)
             return ajax_json
 
-
-    # HELP
     @commands.command()
     async def help(self, ctx):
         embed = discord.Embed()
@@ -122,22 +119,20 @@ class ShellCog(commands.Cog):
                 elif len(missing_array) != 0:
                     embed.add_field(name="Data missing", value=str((len(missing_array))), inline=False)
             await ctx.send(embed=embed)
-    # cluster info
+
     @commands.command(aliases=["c"])
     async def cluster(self, ctx, *, cluster_choice):
         if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
         await ctx.channel.send('Loading...', delete_after=3)
         await self.info(ctx, cluster_choice)
-    # info
+
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
         await ctx.channel.send('Loading...', delete_after=3)
         cluster_choice = "all"
         await self.info(ctx, cluster_choice)
 
-    # RYTHM GUILD INFO
-    # AIOHTTP DONE
     @commands.command(aliases=["g"])
     async def guild(self, ctx, guild_id: int):
         await ctx.channel.send('Loading...', delete_after=3)
@@ -153,8 +148,6 @@ class ShellCog(commands.Cog):
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
-    # RYTHM SHARD INFO
-    # AIOHTTP DONE
     @commands.command(aliases=["s"])
     async def shard(self, ctx, shard_id: int):
         await ctx.channel.send('Loading...', delete_after=3)
@@ -167,8 +160,6 @@ class ShellCog(commands.Cog):
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
 
-    # RYTHM CLUSTER INFO
-    # AIOHTTP DONE
     @commands.command(aliases=["ci"])
     async def clusterinfo(self, ctx):
         await ctx.channel.send('Loading...', delete_after=3)
@@ -204,8 +195,6 @@ class ShellCog(commands.Cog):
             embed.add_field(name="Expected Resolution Time", value=time_in_minutes, inline=False)
         await ctx.send(embed=embed)
 
-    # RYTHM CHECK
-    # AIOHTTP DONE
     @commands.command()
     async def check(self, ctx):
         await ctx.channel.send('Loading...', delete_after=3)
@@ -254,9 +243,6 @@ class ShellCog(commands.Cog):
             embed.set_footer(text="a bot by ash#0001")
             await ctx.send(embed=embed)
         self.stuck_array = stuck_compare
-
-
-
 
 def setup(bot):
     bot.remove_command("help")
