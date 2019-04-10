@@ -1,14 +1,16 @@
 # ri
 ```diff
 
-*** 11 Feb 2019 ***
-+ Verbose error message for missing arguments (ri c, g, s)
-+ Verbose error messages for offline status-pages (and other HTTP errors)
-+ Swapped ci and c for consistency
+*** 10 Apr 2019 ***
++ Cleaned up all of the functions
++ No functions are now duplicated
++ Errors are now handled
++ Updated for discord.py 1.0.0
++ Updated for python3.6+?
 
 *** Coming soon ***
-> Handing more code errors
-> More functionality if status-page is offline
+> API implementation
 
-! The GitHub repro is now private. If you wish to contribute, message ash#0001
+! Requires python3.6
+! Requires discord.py 1.0.0
 ```

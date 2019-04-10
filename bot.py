@@ -1,4 +1,7 @@
 __authors__ = 'aejb'
+
+## requires d.py 1.0
+## requires python3.6
 import discord
 from discord.ext import commands
 import traceback
