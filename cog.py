@@ -15,7 +15,7 @@ class ShellCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.shardCount = 2304
+        self.shardCount = 3600
         self.testing = 0
         self.stuck_array = []
 
