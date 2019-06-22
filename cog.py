@@ -15,7 +15,7 @@ class ShellCog(commands.Cog):
 
     def __init__(self, bot):
         self.bot = bot
-        self.shardCount = 2304
+        self.shardCount = 3600
         self.testing = 0
         self.stuck_array = []
 
@@ -75,14 +75,17 @@ class ShellCog(commands.Cog):
         missing_array = []
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
-                       "RECONNECTING": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
-                       "RECONNECT_QUEUED": []}
+                       "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
+                       "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
+                       "FAILED_TO_LOGIN": []}
         string_dict = {"INITIALIZING": "Initialising", "INITIALIZED": "Initialised", "LOGGING_IN": "Logging in",
                        "CONNECTING_TO_WEBSOCKET": "connecting to websocket", "IDENTIFYING_SESSION": "Identifying",
                        "AWAITING_LOGIN_CONFIRMATION": "Awaiting confirmation",
-                       "LOADING_SUBSYSTEMS": "Loading subsystems", "RECONNECTING": "Reconnecting",
+                       "LOADING_SUBSYSTEMS": "Loading subsystems", "CONNECTED": "Websocket is connected",
                        "ATTEMPTING_TO_RECONNECT": "Attempting to reconnect",
-                       "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue"}
+                       "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue",
+                       "DISCONNECTED": "Websocket is disconnected", "SHUTTING_DOWN": "Shutting down",
+                       "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
         for i in raw:
             if cluster_choice == "all" or math.floor(int(i) / int(math.ceil(self.shardCount / 9))) == cluster_choice:
                 if raw[str(i)] == "CONNECTED":
