@@ -220,8 +220,9 @@ class ShellCog(commands.Cog):
         raw = await self.getJSON(ctx)
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
-                       "RECONNECTING": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
-                       "RECONNECT_QUEUED": []}
+                       "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
+                       "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
+                       "FAILED_TO_LOGIN": []}
         missing = []
         stuck_compare = []
         for i in raw:
