@@ -194,7 +194,7 @@ class ShellCog(commands.Cog):
             iterative += 1
         embed.set_footer(text="a bot by ash#0001")
         if problems != 0:
-            time_in_minutes = str(datetime.timedelta(seconds=int(problems * 6.5)))
+            time_in_minutes = str(datetime.timedelta(seconds=int(problems * (6.5/16))))
             embed.add_field(name="Expected Resolution Time", value=time_in_minutes, inline=False)
         await ctx.send(embed=embed)
 
