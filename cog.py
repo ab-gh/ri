@@ -138,9 +138,18 @@ class ShellCog(commands.Cog):
         print("clc: ", cluster_choice)
         if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
+        elif not isint(cluster_choice):
+            await ctx.channel.send('Cluster number cannot be a string')
         elif int(cluster_choice) > 9 or int(cluster_choice) < 1:
-            await ctx.channel.send('Clusters must be between 1 and 9')
+            await ctx.channel.send('Cluster number must be between 1 and 9')
         await self.info(ctx, cluster_choice)
+
+    def isint(test_value):
+        try:
+            int(test_value)
+            return True
+        except ValueError:
+            return False
 
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
