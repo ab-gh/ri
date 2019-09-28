@@ -149,7 +149,8 @@ class ShellCog(commands.Cog):
             await ctx.channel.send('Cluster number cannot be a string')
         elif int(cluster_choice) > 9 or int(cluster_choice) < 1:
             await ctx.channel.send('Cluster number must be between 1 and 9')
-        await self.info(ctx, cluster_choice)
+        else:
+            await self.info(ctx, cluster_choice)
 
 
     @commands.command(aliases=["info", "i"])
