@@ -99,6 +99,8 @@ class ShellCog(commands.Cog):
             command_type = ""
         else:
             command_type = "Cluster " + cluster_choice
+        print("online ", online_count)
+        print("found ", found_count)
         if online_count == found_count:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm {} is 100% Online\nThere are 0 issues".format(
