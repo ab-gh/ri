@@ -87,11 +87,9 @@ class ShellCog(commands.Cog):
                        "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue",
                        "DISCONNECTED": "Websocket is disconnected", "SHUTTING_DOWN": "Shutting down",
                        "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
-        print("cluster choice: ", cluster_choice)
         for i in raw:
             print(math.floor(int(i) / int(math.ceil(self.shardCount / 9))))
             if cluster_choice == "all" or int(math.floor(int(i) / int(math.ceil(self.shardCount / 9)))) == int(cluster_choice):
-                print(i)
                 if raw[str(i)] == "CONNECTED":
                     online_count += 1
                 elif raw[str(i)] in status_dict:
@@ -102,8 +100,6 @@ class ShellCog(commands.Cog):
             command_type = ""
         else:
             command_type = "Cluster " + cluster_choice
-        print("online ", online_count)
-        print("found ", found_count)
         if online_count == found_count:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm {} is 100% Online\nThere are 0 issues".format(
