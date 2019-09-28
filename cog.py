@@ -16,7 +16,7 @@ class ShellCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.shardCount = 4480
-        self.testing = 0
+        self.testing = 1
         self.stuck_array = []
 
     async def fetch(self, session, url, ctx):
@@ -131,18 +131,15 @@ class ShellCog(commands.Cog):
     async def cluster(self, ctx, *, cluster_choice):
         if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
-        await ctx.channel.send('Loading...', delete_after=3)
         await self.info(ctx, cluster_choice)
 
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
-        await ctx.channel.send('Loading...', delete_after=3)
         cluster_choice = "all"
         await self.info(ctx, cluster_choice)
 
     @commands.command(aliases=["g"])
     async def guild(self, ctx, guild_id: int):
-        await ctx.channel.send('Loading...', delete_after=3)
         python_obj = await self.getAJAX(ctx, guild_id)
         shard_id = int(python_obj["shard"])
         cluster_id = int(python_obj["cluster"])
@@ -157,7 +154,6 @@ class ShellCog(commands.Cog):
 
     @commands.command(aliases=["s"])
     async def shard(self, ctx, shard_id: int):
-        await ctx.channel.send('Loading...', delete_after=3)
         embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Info from Shard")
         embed.add_field(name="Shard", value=str(shard_id), inline=False)
         embed.add_field(name="Cluster", value=str(math.floor(int(shard_id) / int(math.ceil(self.shardCount / 9)))),
@@ -169,7 +165,6 @@ class ShellCog(commands.Cog):
 
     @commands.command(aliases=["ci"])
     async def clusterinfo(self, ctx):
-        await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         issues_array = []
         raw = await self.getJSON(ctx)
@@ -204,7 +199,6 @@ class ShellCog(commands.Cog):
 
     @commands.command()
     async def check(self, ctx):
-        await ctx.channel.send('Loading...', delete_after=3)
         raw = await self.getJSON(ctx)
         shards_loaded = 0
         for i in raw:
@@ -219,7 +213,6 @@ class ShellCog(commands.Cog):
 
     @commands.command()
     async def stuck(self, ctx):
-        await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         raw = await self.getJSON(ctx)
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
