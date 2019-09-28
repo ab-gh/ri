@@ -103,7 +103,7 @@ class ShellCog(commands.Cog):
             command_type = ""
         else:
             command_type = "Cluster " + cluster_choice
-        if online_count == found_count:
+        if online_count == counted_shards:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm {} is 100% Online\nThere are 0 issues".format(
                                       command_type))
@@ -114,7 +114,7 @@ class ShellCog(commands.Cog):
             if cluster_choice == "all":
                 problems = counted_shards - online_count
             else:
-                problems = found_count - online_count
+                problems = counted_shards - online_count
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm {} is {}% Online\nThere are {} issues".format(
                                       command_type,
