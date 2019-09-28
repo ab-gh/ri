@@ -30,7 +30,8 @@ class ShellCog(commands.Cog):
     async def getJSON(self, ctx):
         async with aiohttp.ClientSession() as session:
             if self.testing == 0:
-                raw = await self.fetch(session, "https://status.rythmbot.co/raw", ctx)
+                raw = await self.fetch(session, "10.10.10.61:1346/shardinfo", ctx)
+                ## https://status.rythmbot.co/raw for when external
             else:
                 raw = await self.fetch(session, "http://cdn.dvorak.host/test.json", ctx)
             raw_json = json.loads(raw)
