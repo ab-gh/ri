@@ -130,6 +130,7 @@ class ShellCog(commands.Cog):
         print("found ", found_count)
         print("online ", online_count)
         print("counted ", counted_shards)
+        print(missing_array)
 
     @commands.command(aliases=["c"])
     async def cluster(self, ctx, *, cluster_choice):
