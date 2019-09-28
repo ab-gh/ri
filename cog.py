@@ -3,6 +3,7 @@ import datetime
 import json
 import math
 import numpy
+import typing
 
 import discord
 import requests
@@ -118,7 +119,7 @@ class ShellCog(commands.Cog):
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm {} is {}% Online\nThere are {} issues".format(
                                       command_type,
-                                      str(round((online_count / counted_shards), 4) * 100), problems))
+                                      str(round(100*(online_count / counted_shards), 4)), problems))
             embed.set_author(name="Rythm {} Status".format(command_type))
             embed.set_footer(text="a bot by ash#0001")
             for selection in status_dict:
@@ -133,7 +134,7 @@ class ShellCog(commands.Cog):
         print(missing_array)
 
     @commands.command(aliases=["c"])
-    async def cluster(self, ctx, *, cluster_choice):
+    async def cluster(self, ctx, *, cluster_choice: typing.Optional[int] = None):
         print("clc: ", cluster_choice)
         if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
@@ -189,7 +190,7 @@ class ShellCog(commands.Cog):
         problems = self.shardCount - onlinecount
         embed = discord.Embed(colour=discord.Colour(0xd0892f),
                               description="Rythm is {}% Online\nThere are {} issues".format(
-                                  str(round((onlinecount / self.shardCount), 4) * 100), problems))
+                                  str(round(100*(onlinecount / self.shardCount), 4)), problems))
         embed.set_author(name="Rythm Cluster Status")
         iterative = 0
         for j in clusters:
