@@ -133,6 +133,13 @@ class ShellCog(commands.Cog):
         print("counted ", counted_shards)
         print(missing_array)
 
+    def isint(test_value):
+        try:
+            int(test_value)
+            return True
+        except ValueError:
+            return False
+
     @commands.command(aliases=["c"])
     async def cluster(self, ctx, *, cluster_choice: typing.Optional[str] = None):
         print("clc: ", cluster_choice)
@@ -144,12 +151,6 @@ class ShellCog(commands.Cog):
             await ctx.channel.send('Cluster number must be between 1 and 9')
         await self.info(ctx, cluster_choice)
 
-    def isint(test_value):
-        try:
-            int(test_value)
-            return True
-        except ValueError:
-            return False
 
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
