@@ -128,10 +128,6 @@ class ShellCog(commands.Cog):
                 elif len(missing_array) != 0:
                     embed.add_field(name="Data missing", value=str((len(missing_array))), inline=False)
             await ctx.send(embed=embed)
-        print("found ", found_count)
-        print("online ", online_count)
-        print("counted ", counted_shards)
-        print(missing_array)
 
     def isint(test_value):
         try:
@@ -142,7 +138,6 @@ class ShellCog(commands.Cog):
 
     @commands.command(aliases=["c"])
     async def cluster(self, ctx, *, cluster_choice: typing.Optional[str] = None):
-        print("clc: ", cluster_choice)
         if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
         elif not ShellCog.isint(cluster_choice):
