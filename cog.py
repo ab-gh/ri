@@ -67,6 +67,7 @@ class ShellCog(commands.Cog):
             message = "Error: You need to specify a " + errorname + " ID."
             await ctx.channel.send(message)
             print("\ncommandError\t", error)
+        ## add commands.errors.CommandInvokeError?
 
     async def info(self, ctx, cluster_choice):
         raw = await self.getJSON(ctx)
