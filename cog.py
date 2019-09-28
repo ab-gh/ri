@@ -138,6 +138,8 @@ class ShellCog(commands.Cog):
         print("clc: ", cluster_choice)
         if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
+        elif cluster_choice > 9 or cluster_choice < 1:
+            await ctx.channel.send('Clusters must be between 1 and 9')
         await self.info(ctx, cluster_choice)
 
     @commands.command(aliases=["info", "i"])
