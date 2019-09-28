@@ -134,6 +134,7 @@ class ShellCog(commands.Cog):
 
     @commands.command(aliases=["c"])
     async def cluster(self, ctx, *, cluster_choice):
+        print(cluster_choice)
         if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
         await self.info(ctx, cluster_choice)
