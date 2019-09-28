@@ -90,7 +90,7 @@ class ShellCog(commands.Cog):
         print("cluster choice: ", cluster_choice)
         for i in raw:
             print(math.floor(int(i) / int(math.ceil(self.shardCount / 9))))
-            if cluster_choice == "all" or math.floor(int(i) / int(math.ceil(self.shardCount / 9))) == cluster_choice:
+            if cluster_choice == "all" or int(math.floor(int(i) / int(math.ceil(self.shardCount / 9)))) == int(cluster_choice):
                 print(i)
                 if raw[str(i)] == "CONNECTED":
                     online_count += 1
