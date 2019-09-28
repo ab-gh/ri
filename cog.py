@@ -89,7 +89,6 @@ class ShellCog(commands.Cog):
                        "DISCONNECTED": "Websocket is disconnected", "SHUTTING_DOWN": "Shutting down",
                        "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
         for i in raw:
-            print(math.floor(int(i) / int(math.ceil(self.shardCount / 9))))
             if cluster_choice == "all" or int(math.floor(int(i) / int(math.ceil(self.shardCount / 9)))) == int(cluster_choice):
                 if raw[str(i)] == "CONNECTED":
                     online_count += 1
