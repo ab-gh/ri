@@ -76,6 +76,7 @@ class ShellCog(commands.Cog):
         found_count = 0
         online_count = 0
         missing_array = []
+        counted_shards = 0
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
                        "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
@@ -91,6 +92,7 @@ class ShellCog(commands.Cog):
                        "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
         for i in raw:
             if cluster_choice == "all" or int(math.floor(int(i) / int(math.ceil(self.shardCount / 9)))) == int(cluster_choice):
+                counted_shards += 1
                 if raw[str(i)] == "CONNECTED":
                     online_count += 1
                 elif raw[str(i)] in status_dict:
@@ -110,7 +112,7 @@ class ShellCog(commands.Cog):
             await ctx.send(embed=embed)
         else:
             if cluster_choice == "all":
-                problems = self.shardCount - online_count
+                problems = counted_shards - online_count
             else:
                 problems = found_count - online_count
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
