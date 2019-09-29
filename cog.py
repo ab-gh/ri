@@ -3,6 +3,7 @@ import datetime
 import json
 import math
 import numpy
+import typing
 
 import discord
 import requests
@@ -16,7 +17,7 @@ class ShellCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.shardCount = 4480
-        self.testing = 0
+        self.testing = 1
         self.stuck_array = []
 
     async def fetch(self, session, url, ctx):
@@ -32,6 +33,7 @@ class ShellCog(commands.Cog):
             if self.testing == 0:
                 raw = await self.fetch(session, "http://10.10.10.61:1346/shardinfo", ctx)
                 ## https://status.rythmbot.co/raw for when external
+                ## http://10.10.10.61:1346/shardinfo when internal
             else:
                 raw = await self.fetch(session, "http://cdn.dvorak.host/test.json", ctx)
             raw_json = json.loads(raw)
@@ -75,6 +77,7 @@ class ShellCog(commands.Cog):
         found_count = 0
         online_count = 0
         missing_array = []
+        counted_shards = 0
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
                        "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
@@ -90,6 +93,7 @@ class ShellCog(commands.Cog):
                        "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
         for i in raw:
             if cluster_choice == "all" or int(math.floor(int(i) / int(math.ceil(self.shardCount / 9)))) == int(cluster_choice):
+                counted_shards += 1
                 if raw[str(i)] == "CONNECTED":
                     online_count += 1
                 elif raw[str(i)] in status_dict:
@@ -100,7 +104,7 @@ class ShellCog(commands.Cog):
             command_type = ""
         else:
             command_type = "Cluster " + cluster_choice
-        if online_count == found_count:
+        if online_count == counted_shards:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm {} is 100% Online\nThere are 0 issues".format(
                                       command_type))
@@ -109,13 +113,13 @@ class ShellCog(commands.Cog):
             await ctx.send(embed=embed)
         else:
             if cluster_choice == "all":
-                problems = self.shardCount - online_count
+                problems = counted_shards - online_count
             else:
-                problems = found_count - online_count
+                problems = counted_shards - online_count
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
                                   description="Rythm {} is {}% Online\nThere are {} issues".format(
                                       command_type,
-                                      str(round((online_count / self.shardCount), 4) * 100), problems))
+                                      str(round(100*(online_count / counted_shards), 2)), problems))
             embed.set_author(name="Rythm {} Status".format(command_type))
             embed.set_footer(text="a bot by ash#0001")
             for selection in status_dict:
@@ -123,24 +127,37 @@ class ShellCog(commands.Cog):
                     embed.add_field(name=string_dict[selection], value=str((len(status_dict[selection]))), inline=False)
                 elif len(missing_array) != 0:
                     embed.add_field(name="Data missing", value=str((len(missing_array))), inline=False)
+            if problems != 0:
+                time_in_minutes = str(datetime.timedelta(seconds=int(problems * (5 / 16))))
+                embed.add_field(name="Expected Resolution Time", value=time_in_minutes, inline=False)
             await ctx.send(embed=embed)
 
+    def isint(test_value):
+        try:
+            int(test_value)
+            return True
+        except ValueError:
+            return False
+
     @commands.command(aliases=["c"])
-    async def cluster(self, ctx, *, cluster_choice):
+    async def cluster(self, ctx, *, cluster_choice: typing.Optional[str] = None):
         if not cluster_choice:
             await ctx.channel.send('You need to specify cluster number')
-        await ctx.channel.send('Loading...', delete_after=3)
-        await self.info(ctx, cluster_choice)
+        elif not ShellCog.isint(cluster_choice):
+            await ctx.channel.send('Cluster number cannot be a string')
+        elif int(cluster_choice) > 9 or int(cluster_choice) < 1:
+            await ctx.channel.send('Cluster number must be between 1 and 9')
+        else:
+            await self.info(ctx, cluster_choice)
+
 
     @commands.command(aliases=["info", "i"])
     async def status(self, ctx):
-        await ctx.channel.send('Loading...', delete_after=3)
         cluster_choice = "all"
         await self.info(ctx, cluster_choice)
 
     @commands.command(aliases=["g"])
     async def guild(self, ctx, guild_id: int):
-        await ctx.channel.send('Loading...', delete_after=3)
         python_obj = await self.getAJAX(ctx, guild_id)
         shard_id = int(python_obj["shard"])
         cluster_id = int(python_obj["cluster"])
@@ -155,7 +172,6 @@ class ShellCog(commands.Cog):
 
     @commands.command(aliases=["s"])
     async def shard(self, ctx, shard_id: int):
-        await ctx.channel.send('Loading...', delete_after=3)
         embed = discord.Embed(colour=discord.Colour(0xd0892f), description="Info from Shard")
         embed.add_field(name="Shard", value=str(shard_id), inline=False)
         embed.add_field(name="Cluster", value=str(math.floor(int(shard_id) / int(math.ceil(self.shardCount / 9)))),
@@ -167,7 +183,6 @@ class ShellCog(commands.Cog):
 
     @commands.command(aliases=["ci"])
     async def clusterinfo(self, ctx):
-        await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         issues_array = []
         raw = await self.getJSON(ctx)
@@ -186,7 +201,7 @@ class ShellCog(commands.Cog):
         problems = self.shardCount - onlinecount
         embed = discord.Embed(colour=discord.Colour(0xd0892f),
                               description="Rythm is {}% Online\nThere are {} issues".format(
-                                  str(round((onlinecount / self.shardCount), 4) * 100), problems))
+                                  str(round(100*(onlinecount / self.shardCount), 2)), problems))
         embed.set_author(name="Rythm Cluster Status")
         iterative = 0
         for j in clusters:
@@ -202,7 +217,6 @@ class ShellCog(commands.Cog):
 
     @commands.command()
     async def check(self, ctx):
-        await ctx.channel.send('Loading...', delete_after=3)
         raw = await self.getJSON(ctx)
         shards_loaded = 0
         for i in raw:
@@ -217,7 +231,6 @@ class ShellCog(commands.Cog):
 
     @commands.command()
     async def stuck(self, ctx):
-        await ctx.channel.send('Loading...', delete_after=3)
         onlinecount = 0
         raw = await self.getJSON(ctx)
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
