@@ -49,6 +49,9 @@ class ShellCog(commands.Cog):
     @commands.command()
     async def live(self, ctx, live_command):
         message = "live, " + live_command
+        if live_command == "start":
+            capture = await ctx.send(message)
+            await capture.edit("edited")
         await ctx.send(message)
 
     @commands.command()
