@@ -52,7 +52,7 @@ class ShellCog(commands.Cog):
         message = "live, " + live_command
         if live_command == "start":
             capture = await ctx.send(message)
-            refresh_time = datetime.fromtimestamp(datetime.timestamp(now))
+            refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
             edit_with = str(refresh_time)
             await capture.edit(content=edit_with)
 
