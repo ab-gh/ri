@@ -51,8 +51,8 @@ class ShellCog(commands.Cog):
         message = "live, " + live_command
         if live_command == "start":
             capture = await ctx.send(message)
-            string = "edited"
-            await capture.edit(string)
+            strings = "edited"
+            await capture.edit(strings)
             #await capture.edit("edited")
 
     @commands.command()
