@@ -55,7 +55,6 @@ class ShellCog(commands.Cog):
             refresh_time = datetime.fromtimestamp(timestamp)
             edit_with = str(refresh_time)
             await capture.edit(content=edit_with)
-            #await capture.edit("edited")
 
     @commands.command()
     async def help(self, ctx):
