@@ -17,7 +17,7 @@ class ShellCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.shardCount = 4480
-        self.testing = 0
+        self.testing = 1
         self.stuck_array = []
 
     async def fetch(self, session, url, ctx):
@@ -45,6 +45,11 @@ class ShellCog(commands.Cog):
             ajax = await self.fetch(session, combined, ctx)
             ajax_json = json.loads(ajax)
             return ajax_json
+
+    @commands.command()
+    async def live(self, ctx, live_command):
+        message = "live, " + live_command
+        await ctx.send(message)
 
     @commands.command()
     async def help(self, ctx):
