@@ -10,6 +10,7 @@ import requests
 import aiohttp
 import asyncio
 from discord.ext import commands
+from datetime import datetime
 
 
 class ShellCog(commands.Cog):
@@ -51,8 +52,9 @@ class ShellCog(commands.Cog):
         message = "live, " + live_command
         if live_command == "start":
             capture = await ctx.send(message)
-            strings = "edited"
-            await capture.edit(content="Edited")
+            refresh_time = datetime.fromtimestamp(timestamp)
+            edit_with = str(refresh_time)
+            await capture.edit(content=edit_with)
             #await capture.edit("edited")
 
     @commands.command()
