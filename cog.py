@@ -51,10 +51,24 @@ class ShellCog(commands.Cog):
     async def live(self, ctx, live_command):
         message = "live, " + live_command
         if live_command == "start":
-            capture = await ctx.send(message)
             refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
-            edit_with = str(refresh_time)
-            await capture.edit(content=edit_with)
+            edit_with = str("last refreshed at " + refresh_time + " UTC")
+            embed = discord.Embed(colour=discord.Colour(0x2a60f3),
+                                  description="**Rythm is currently experiencing an outage.** We are aware, and Rythm is rebooting.")
+            embed.set_author(name="Live Rythm Status")
+            embed.set_footer(text=edit_with)
+            embed.add_field(name="Rythm is currently x% online", value="x/4480 shards have started")
+            embed.add_field(name="Rythm should be fully online in x minutes", value="Thank you for your patience")
+            capture = await bot.say(embed=embed)
+
+            embed = discord.Embed(colour=discord.Colour(0x2a60f3),
+                                  description="**Rythm is currently experiencing an outage.** We are aware, and Rythm is rebooting.")
+            embed.set_author(name="Live Rythm Status")
+            edit_with = str("last refreshed at " + refresh_time + " UTC")
+            embed.set_footer(text=edit_with)
+            embed.add_field(name="Rythm is currently x% online", value="x/4480 shards have started")
+            embed.add_field(name="Rythm should be fully online in x minutes", value="Thank you for your patience")
+            await capture.edit(embed=embed)
 
     @commands.command()
     async def help(self, ctx):
