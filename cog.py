@@ -29,6 +29,10 @@ class ShellCog(commands.Cog):
                 message = "Error: HTTP error " + str(response.status)
                 await ctx.channel.send(message)
 
+    def get_resolution_time(self, problems):
+        time_in_minutes = str(datetime.timedelta(seconds=int(problems * (6.5 / 16))))
+        return time_in_minutes
+
     async def getJSON(self, ctx):
         async with aiohttp.ClientSession() as session:
             if self.testing == 0:
@@ -46,29 +50,6 @@ class ShellCog(commands.Cog):
             ajax = await self.fetch(session, combined, ctx)
             ajax_json = json.loads(ajax)
             return ajax_json
-
-    @commands.command()
-    async def live(self, ctx, live_command):
-        message = "live, " + live_command
-        if live_command == "start":
-            refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
-            edit_with = str("last refreshed at " + refresh_time + " UTC")
-            embed = discord.Embed(colour=discord.Colour(0x2a60f3),
-                                  description="**Rythm is currently experiencing an outage.** We are aware, and Rythm is rebooting.")
-            embed.set_author(name="Live Rythm Status")
-            embed.set_footer(text=edit_with)
-            embed.add_field(name="Rythm is currently x% online", value="x/4480 shards have started")
-            embed.add_field(name="Rythm should be fully online in x minutes", value="Thank you for your patience")
-            capture = await bot.say(embed=embed)
-
-            embed = discord.Embed(colour=discord.Colour(0x2a60f3),
-                                  description="**Rythm is currently experiencing an outage.** We are aware, and Rythm is rebooting.")
-            embed.set_author(name="Live Rythm Status")
-            edit_with = str("last refreshed at " + refresh_time + " UTC")
-            embed.set_footer(text=edit_with)
-            embed.add_field(name="Rythm is currently x% online", value="x/4480 shards have started")
-            embed.add_field(name="Rythm should be fully online in x minutes", value="Thank you for your patience")
-            await capture.edit(embed=embed)
 
     @commands.command()
     async def help(self, ctx):
@@ -152,8 +133,8 @@ class ShellCog(commands.Cog):
                 elif len(missing_array) != 0:
                     embed.add_field(name="Data missing", value=str((len(missing_array))), inline=False)
             if problems != 0:
-                time_in_minutes = str(datetime.timedelta(seconds=int(problems * (5 / 16))))
-                embed.add_field(name="Expected Resolution Time", value=time_in_minutes, inline=False)
+                time_in_minutes = str(datetime.timedelta(seconds=int(problems * (6.5 / 16))))
+                embed.add_field(name="Expected Resolution Time", value=self.get_resolution_time(problems), inline=False)
             await ctx.send(embed=embed)
 
     def isint(test_value):
@@ -235,9 +216,11 @@ class ShellCog(commands.Cog):
             iterative += 1
         embed.set_footer(text="a bot by ash#0001")
         if problems != 0:
-            time_in_minutes = str(datetime.timedelta(seconds=int(problems * (5/16))))
-            embed.add_field(name="Expected Resolution Time", value=time_in_minutes, inline=False)
+            time_in_minutes = str(datetime.timedelta(seconds=int(problems * (6.5/16))))
+            embed.add_field(name="Expected Resolution Time", value=self.get_resolution_time(problems), inline=False)
         await ctx.send(embed=embed)
+
+
 
     @commands.command()
     async def check(self, ctx):
