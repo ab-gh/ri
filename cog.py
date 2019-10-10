@@ -1,5 +1,4 @@
 __authors__ = 'aejb'
-import datetime
 import json
 import math
 import numpy
@@ -10,7 +9,7 @@ import requests
 import aiohttp
 import asyncio
 from discord.ext import commands
-import datetime
+from datetime import datetime
 
 
 class ShellCog(commands.Cog):
