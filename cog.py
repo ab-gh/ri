@@ -29,10 +29,6 @@ class ShellCog(commands.Cog):
                 message = "Error: HTTP error " + str(response.status)
                 await ctx.channel.send(message)
 
-    def get_resolution_time(self, problems):
-        time_in_minutes = str(datetime.timedelta(seconds=int(problems * (6.5 / 16))))
-        return time_in_minutes
-
     async def getJSON(self, ctx):
         async with aiohttp.ClientSession() as session:
             if self.testing == 0:
