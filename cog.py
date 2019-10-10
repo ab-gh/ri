@@ -9,7 +9,7 @@ import requests
 import aiohttp
 import asyncio
 from discord.ext import commands
-from datetime import datetime
+from datetime import datetime, timedelta
 
 
 class ShellCog(commands.Cog):
@@ -47,7 +47,7 @@ class ShellCog(commands.Cog):
             return ajax_json
 
     def get_resolution_time(self, problems):
-        time_in_minutes = str(datetime.timedelta(seconds=int(problems * (6.5 / 16))))
+        time_in_minutes = str(timedelta(seconds=int(problems * (6.5 / 16))))
         return time_in_minutes
 
     @commands.command()
