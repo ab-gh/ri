@@ -10,7 +10,7 @@ import requests
 import aiohttp
 import asyncio
 from discord.ext import commands
-from datetime import datetime
+import datetime
 
 
 class ShellCog(commands.Cog):
