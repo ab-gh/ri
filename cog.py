@@ -132,7 +132,7 @@ class ShellCog(commands.Cog):
                 elif len(missing_array) != 0:
                     embed.add_field(name="Data missing", value=str((len(missing_array))), inline=False)
             if problems != 0:
-                time_in_minutes = str(datetime.timedelta(seconds=int(problems * (6.5 / 16))))
+                #time_in_minutes = str(datetime.timedelta(seconds=int(problems * (6.5 / 16))))
                 embed.add_field(name="Expected Resolution Time", value=self.get_resolution_time(problems), inline=False)
             await ctx.send(embed=embed)
 
