@@ -85,7 +85,7 @@ class ShellCog(commands.Cog):
                 problems = counted_shards - online_count
                 percent_online = str(round(100 * (online_count / counted_shards), 2))
             print(problems, " ", percent_online)
-            embed.add_field(name="Rythm is currently {}% online", value="{} shards connected".format(percent_online, problems))
+            embed.add_field(name="Rythm is currently {} % online", value="{} shards connected".format(percent_online, problems))
             print(embed)
             await self.live_channel_obj.edit(embed=embed)
 
