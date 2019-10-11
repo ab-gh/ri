@@ -30,6 +30,7 @@ class ShellCog(commands.Cog):
     async def live(self):
         if self.live_channel_obj is None: return
         else:
+            print(self.live_channel_obj)
             refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
             edit_with = str("last refreshed at " + refresh_time + " UTC")
             embed = discord.Embed(colour=discord.Colour(0x2a60f3),
