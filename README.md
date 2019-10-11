@@ -9,6 +9,8 @@
 
 *** Coming soon ***
 > 64-shard concurrency
+> Localising web/ajax logic
+> "Loading" embed edited to content or error
 
 ! Requires python3.6
 ! Requires discord.py 1.0.0
