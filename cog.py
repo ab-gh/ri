@@ -26,8 +26,8 @@ class ShellCog(commands.Cog):
     def cog_unload(self):
         self.live.cancel()
 
-    @tasks.loop(seconds=10.0)
-    async def live(self, ctx):
+    @tasks.loop(seconds=3.0)
+    async def live(self):
         if self.live_channel_obj is None: return
         else:
             refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
