@@ -26,7 +26,7 @@ class ShellCog(commands.Cog):
     def cog_unload(self):
         self.live.cancel()
 
-    @tasks.loop(seconds=2.0) ## set to 20.0
+    @tasks.loop(seconds=20.0) ## set to 20.0
     async def live(self):
         if self.live_channel_obj is None: return
         else:
