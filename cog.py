@@ -107,12 +107,12 @@ class ShellCog(commands.Cog):
         if cluster_choice == "all":
             command_type = ""
         else:
-            command_type = "Cluster " + cluster_choice
+            command_type = " Cluster " + cluster_choice
         if online_count == counted_shards:
             embed = discord.Embed(colour=discord.Colour(0xd0892f),
-                                  description="Rythm {} is 100% Online\nThere are 0 issues".format(
+                                  description="Rythm{} is 100% Online\nThere are 0 issues".format(
                                       command_type))
-            embed.set_author(name="Rythm {} Status".format(command_type))
+            embed.set_author(name="Rythm{} Status".format(command_type))
             embed.set_footer(text="a bot by ash#0001")
             await ctx.send(embed=embed)
         else:
