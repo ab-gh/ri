@@ -54,6 +54,7 @@ class ShellCog(commands.Cog):
                             message = "Error: HTTP error " + str(response.status)
                             print(message)
                 raw = json.loads(raw)
+                print(raw)
             problems, percent_online = self.live_logic(self, raw)
             print(problems, " ", percent_online)
             await self.live_channel_obj.edit(embed=embed)
