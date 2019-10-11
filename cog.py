@@ -39,6 +39,7 @@ class ShellCog(commands.Cog):
             embed.add_field(name="Rythm is currently {}% online", value="{} shards connected")
             print(embed)
             async with aiohttp.ClientSession() as session:
+                print("with aiohttp")
                 async with session.get("http://10.10.10.61:1346/shardinfo") as response:
                     print(response)
                     if response.status == 200:
