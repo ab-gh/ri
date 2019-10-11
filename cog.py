@@ -54,11 +54,11 @@ class ShellCog(commands.Cog):
                             message = "Error: HTTP error " + str(response.status)
                             print(message)
                 raw = json.loads(raw)
-            problems, percent_online = await self.live_logic(self, raw)
+            problems, percent_online = self.live_logic(self, raw)
             print(problems, " ", percent_online)
             await self.live_channel_obj.edit(embed=embed)
 
-    async def live_logic(self, raw):
+    def live_logic(self, raw):
         print("livelogic")
         found_count = 0
         online_count = 0
