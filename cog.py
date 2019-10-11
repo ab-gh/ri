@@ -17,7 +17,7 @@ class ShellCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.shardCount = 4480
-        self.testing = 0
+        self.testing = 1
         self.stuck_array = []
         self.live_channel_obj = None
         self.live.start()
@@ -26,7 +26,7 @@ class ShellCog(commands.Cog):
     def cog_unload(self):
         self.live.cancel()
 
-    @tasks.loop(seconds=20.0) ## set to 20.0
+    @tasks.loop(seconds=2.0) ## set to 20.0
     async def live(self):
         if self.live_channel_obj is None: return
         else:
@@ -81,7 +81,12 @@ class ShellCog(commands.Cog):
                 percent_online = str(round(100 * (online_count / counted_shards), 2))
             online_shards = self.shardCount-problems
             new_message = "\N{INFORMATION SOURCE} **Rythm is currently " + str(percent_online) + "% online.** ``" + str(online_shards) + "/" + str(self.shardCount) + "`` shards connected."
-            await self.live_channel_obj.edit(content=new_message)
+            try:
+                await self.live_channel_obj.edit(content=new_message)
+            except:
+                self.live_channel_obj = None
+                print(self.live_channel_obj)
+
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
