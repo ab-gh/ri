@@ -38,7 +38,8 @@ class ShellCog(commands.Cog):
             embed.set_footer(text=refresh_time)
             embed.add_field(name="Rythm is cuscreenrrently x% online", value="x/4480 shards have started")
             embed.add_field(name="Rythm should be fully online in x minutes", value="Thank you for your patience")
-            await self.live_channel_obj.message.edit(embed=embed)
+            print(embed)
+            await self.live_channel_obj.edit(embed=embed)
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
