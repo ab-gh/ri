@@ -54,8 +54,7 @@ class ShellCog(commands.Cog):
                             message = "Error: HTTP error " + str(response.status)
                             print(message)
                 raw = json.loads(raw)
-                print(raw)
-            problems, percent_online = self.live_logic(self, raw)
+            problems = self.live_logic(self, raw)
             print(problems, " ", percent_online)
             await self.live_channel_obj.edit(embed=embed)
 
@@ -93,7 +92,7 @@ class ShellCog(commands.Cog):
         else:
             problems = counted_shards - online_count
             percent_online = str(round(100 * (online_count / counted_shards), 2))
-        return problems, percent_online
+        return problems
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
