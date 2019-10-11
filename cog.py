@@ -44,6 +44,7 @@ class ShellCog(commands.Cog):
 
     async def live_logic(self, ctx):
         raw = await self.getJSON(ctx)
+        print("livelogic")
         found_count = 0
         online_count = 0
         missing_array = []
