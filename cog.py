@@ -32,7 +32,6 @@ class ShellCog(commands.Cog):
         else:
             refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
             print("refresh", refresh_time)
-
             async with aiohttp.ClientSession() as session:
                 if self.testing == 0:
                     async with session.get("https://status.rythmbot.co/raw") as response:
@@ -82,7 +81,7 @@ class ShellCog(commands.Cog):
                 problems = counted_shards - online_count
                 percent_online = str(round(100 * (online_count / counted_shards), 2))
             online_shards = self.shardCount-problems
-            new_message = "\N{INFORMATION SOURCE} **Rythm is currently " + str(percent_online) + "% online.** ``" + str(online_shards) + "/" + str(self.shardCount) + "`` shards connected."
+            new_message = "\N{INFORMATION SOURCE} **Rythm is currently " + str(percent_online) + "% online.** ``" + str(online_shards) + "/" + str(self.shardCount) + "`` shards connected." + "refreshed at " + str(refresh_time)
             await self.live_channel_obj.edit(content=new_message)
 
     def live_logic(self, raw):
