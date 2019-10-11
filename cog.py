@@ -68,8 +68,8 @@ class ShellCog(commands.Cog):
                               description="Loading Live updates...")
         embed.set_author(name="Live Rythm Status")
         embed.set_footer(text="Loading")
-        embed.add_field(name="Loading")
-        embed.add_field(name="Loading")
+        embed.add_field(name="Loading", value="Loading")
+        embed.add_field(name="Loading", value="Loading")
         self.live_channel_obj = await ctx.send(embed=embed)
 
     @commands.command()
