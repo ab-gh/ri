@@ -39,14 +39,20 @@ class ShellCog(commands.Cog):
             embed.add_field(name="Rythm is currently {}% online", value="{} shards connected")
             print(embed)
             async with aiohttp.ClientSession() as session:
-                print("with aiohttp")
-                async with session.get("http://10.10.10.61:1346/shardinfo") as response:
-                    print(response)
-                    if response.status == 200:
-                        raw = await response.text()
-                    else:
-                        message = "Error: HTTP error " + str(response.status)
-                        print(message)
+                if self.testing == 0:
+                    async with session.get("https://status.rythmbot.co/raw") as response:
+                        if response.status == 200:
+                            raw = await response.text()
+                        else:
+                            message = "Error: HTTP error " + str(response.status)
+                            print(message)
+                else:
+                    async with session.get("http://cdn.dvorak.host/test.json") as response:
+                        if response.status == 200:
+                            raw = await response.text()
+                        else:
+                            message = "Error: HTTP error " + str(response.status)
+                            print(message)
                 raw_json = json.loads(raw)
             print(raw_json)
 
