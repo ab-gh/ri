@@ -81,7 +81,7 @@ class ShellCog(commands.Cog):
                 problems = counted_shards - online_count
                 percent_online = str(round(100 * (online_count / counted_shards), 2))
             online_shards = self.shardCount-problems
-            new_message = "\N{INFORMATION SOURCE} **Rythm is currently " + str(percent_online) + "% online.** ``" + str(online_shards) + "/" + str(self.shardCount) + "`` shards connected." + "refreshed at " + str(refresh_time)
+            new_message = "\N{INFORMATION SOURCE} **Rythm is currently " + str(percent_online) + "% online.** ``" + str(online_shards) + "/" + str(self.shardCount) + "`` shards connected."
             await self.live_channel_obj.edit(content=new_message)
 
     def live_logic(self, raw):
