@@ -41,6 +41,7 @@ class ShellCog(commands.Cog):
             async with aiohttp.ClientSession() as session:
                 if self.testing == 0:
                     async with session.get("http://10.10.10.61:1346/shardinfo") as response:
+                        print(response)
                         if response.status == 200:
                             raw = await response.text()
                         else:
