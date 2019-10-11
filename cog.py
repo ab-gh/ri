@@ -17,7 +17,7 @@ class ShellCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.shardCount = 4480
-        self.testing = 1
+        self.testing = 0
         self.stuck_array = []
         self.live_channel_obj = None
         self.live.start()
