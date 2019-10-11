@@ -36,7 +36,7 @@ class ShellCog(commands.Cog):
                                   description="**Rythm is currently experiencing an outage.** We are aware, and Rythm is rebooting.")
             embed.set_author(name="Live Rythm Status")
             embed.set_footer(text=edit_with)
-            embed.add_field(name="Rythm is currently x% online", value="x/4480 shards have started")
+            embed.add_field(name="Rythm is cuscreenrrently x% online", value="x/4480 shards have started")
             embed.add_field(name="Rythm should be fully online in x minutes", value="Thank you for your patience")
             await self.live_channel_obj.edit(embed=embed)
 
@@ -79,6 +79,7 @@ class ShellCog(commands.Cog):
         embed.add_field(name="Loading", value="Loading", inline=False)
         embed.add_field(name="Loading", value="Loading", inline=False)
         self.live_channel_obj = await ctx.send(embed=embed)
+        embed = None
 
     @commands.command()
     async def liveend(self, ctx):
