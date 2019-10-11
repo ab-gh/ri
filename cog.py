@@ -19,7 +19,7 @@ class ShellCog(commands.Cog):
         self.shardCount = 4480
         self.testing = 0
         self.stuck_array = []
-        self.live_channel_id = None
+        self.live_channel_obj = None
         self.live.start()
         self.index = 0
 
@@ -28,8 +28,9 @@ class ShellCog(commands.Cog):
 
     @tasks.loop(seconds=5.0)
     async def live(self):
-        print(self.index)
-        self.index += 1
+        if self.live_channel_obj is None: return
+        else:
+            print("thing is here")
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
@@ -60,6 +61,10 @@ class ShellCog(commands.Cog):
     def get_resolution_time(self, problems):
         time_in_minutes = str(timedelta(seconds=int(problems * (6.5 / 16))))
         return time_in_minutes
+
+    @commands.command()
+    async def live(self, ctx):
+        self.live_channel_obj = ctx.channel.send("hi")
 
     @commands.command()
     async def help(self, ctx):
