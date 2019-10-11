@@ -30,7 +30,15 @@ class ShellCog(commands.Cog):
     async def live(self):
         if self.live_channel_obj is None: return
         else:
-            await self.live_channel_obj.channel.send("again")
+            refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
+            edit_with = str("last refreshed at " + refresh_time + " UTC")
+            embed = discord.Embed(colour=discord.Colour(0x2a60f3),
+                                  description="**Rythm is currently experiencing an outage.** We are aware, and Rythm is rebooting.")
+            embed.set_author(name="Live Rythm Status")
+            embed.set_footer(text=edit_with)
+            embed.add_field(name="Rythm is currently x% online", value="x/4480 shards have started")
+            embed.add_field(name="Rythm should be fully online in x minutes", value="Thank you for your patience")
+            await self.live_channel_obj.edit(embed=embed)
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
@@ -68,8 +76,8 @@ class ShellCog(commands.Cog):
                               description="Loading Live updates...")
         embed.set_author(name="Live Rythm Status")
         embed.set_footer(text="Loading")
-        embed.add_field(name="Loading", value="Loading")
-        embed.add_field(name="Loading", value="Loading")
+        embed.add_field(name="Loading", value="Loading", inline=False)
+        embed.add_field(name="Loading", value="Loading", inline=False)
         self.live_channel_obj = await ctx.send(embed=embed)
 
     @commands.command()
