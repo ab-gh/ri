@@ -8,7 +8,7 @@ import discord
 import requests
 import aiohttp
 import asyncio
-from discord.ext import commands
+from discord.ext import commands, tasks
 from datetime import datetime, timedelta
 
 
@@ -19,6 +19,69 @@ class ShellCog(commands.Cog):
         self.shardCount = 4480
         self.testing = 0
         self.stuck_array = []
+        self.live_channel_obj = None
+        self.live.start()
+        self.index = 0
+
+    def cog_unload(self):
+        self.live.cancel()
+
+    @tasks.loop(seconds=20.0) ## set to 20.0
+    async def live(self):
+        if self.live_channel_obj is None: return
+        else:
+            refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
+            async with aiohttp.ClientSession() as session:
+                if self.testing == 0:
+                    async with session.get("http://10.10.10.61:1346/shardinfo") as response:
+                        if response.status == 200:
+                            raw = await response.text()
+                        else:
+                            message = "Error: HTTP error " + str(response.status)
+                            print(message)
+                else:
+                    async with session.get("http://cdn.dvorak.host/test.json") as response:
+                        if response.status == 200:
+                            raw = await response.text()
+                        else:
+                            message = "Error: HTTP error " + str(response.status)
+                            print(message)
+            raw = json.loads(raw)
+            found_count = 0
+            online_count = 0
+            missing_array = []
+            counted_shards = 0
+            status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
+                           "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
+                           "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
+                           "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
+                           "FAILED_TO_LOGIN": []}
+            string_dict = {"INITIALIZING": "Initialising", "INITIALIZED": "Initialised", "LOGGING_IN": "Logging in",
+                           "CONNECTING_TO_WEBSOCKET": "connecting to websocket", "IDENTIFYING_SESSION": "Identifying",
+                           "AWAITING_LOGIN_CONFIRMATION": "Awaiting confirmation",
+                           "LOADING_SUBSYSTEMS": "Loading subsystems", "CONNECTED": "Websocket is connected",
+                           "ATTEMPTING_TO_RECONNECT": "Attempting to reconnect",
+                           "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue",
+                           "DISCONNECTED": "Websocket is disconnected", "SHUTTING_DOWN": "Shutting down",
+                           "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
+            for i in raw:
+                if True:
+                    counted_shards += 1
+                    if raw[str(i)] == "CONNECTED":
+                        online_count += 1
+                    elif raw[str(i)] in status_dict:
+                        status_dict[raw[str(i)]].append(str(i))
+                    else:
+                        missing_array.append(str(i))
+            if online_count == counted_shards:
+                problems = 0
+                percent_online = str(100)
+            else:
+                problems = counted_shards - online_count
+                percent_online = str(round(100 * (online_count / counted_shards), 2))
+            online_shards = self.shardCount-problems
+            new_message = "\N{INFORMATION SOURCE} **Rythm is currently " + str(percent_online) + "% online.** ``" + str(online_shards) + "/" + str(self.shardCount) + "`` shards connected."
+            await self.live_channel_obj.edit(content=new_message)
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
@@ -51,14 +114,23 @@ class ShellCog(commands.Cog):
         return time_in_minutes
 
     @commands.command()
+    async def livestart(self, ctx):
+        self.live_channel_obj = await ctx.send("Loading...")
+
+    @commands.command()
+    async def livestop(self, ctx):
+        await self.live_channel_obj.delete()
+        self.live_channel_obj = None
+
+    @commands.command()
     async def help(self, ctx):
         embed = discord.Embed()
 
         embed.add_field(name="Command",
-                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status | i]\nri [clusterinfo | ci]\nri check",
+                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status | i]\nri [clusterinfo | ci]\nri check\nri livestart\nri livestop",
                         inline=True)
         embed.add_field(name="Use",
-                        value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues about a cluster\nInfo on shard issues by issue type \nInfo on shard issues grouped by cluster \nOutputs the loaded shards ",
+                        value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues about a cluster\nInfo on shard issues by issue type \nInfo on shard issues grouped by cluster \nOutputs the loaded shards\nStarts the live update function in the channel used\nStop the live update function and deletes the message",
                         inline=True)
 
         await ctx.send(embed=embed)
