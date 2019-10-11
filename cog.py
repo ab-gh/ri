@@ -27,7 +27,7 @@ class ShellCog(commands.Cog):
         self.live.cancel()
 
     @tasks.loop(seconds=10.0)
-    async def live(self):
+    async def live(self, ctx):
         if self.live_channel_obj is None: return
         else:
             refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
@@ -38,11 +38,11 @@ class ShellCog(commands.Cog):
             embed.set_footer(text=refresh_time)
             embed.add_field(name="Rythm is currently {}% online", value="{} shards connected")
             print(embed)
-            problems, percent_online = self.live_logic()
+            problems, percent_online = self.live_logic(ctx)
             print(problems, " ", percent_online)
             await self.live_channel_obj.edit(embed=embed)
 
-    def live_logic(self):
+    async def live_logic(self, ctx):
         raw = await self.getJSON(ctx)
         found_count = 0
         online_count = 0
