@@ -38,8 +38,9 @@ class ShellCog(commands.Cog):
             embed.set_footer(text=refresh_time)
             embed.add_field(name="Rythm is currently {}% online", value="{} shards connected")
             print(embed)
-            problems, percent_online = self.live_logic(ctx)
-            print(problems, " ", percent_online)
+            raw = await self.getJSON(ctx)
+            print(raw)
+            ## print(problems, " ", percent_online)
             await self.live_channel_obj.edit(embed=embed)
 
     async def live_logic(self, ctx):
