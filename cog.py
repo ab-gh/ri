@@ -81,7 +81,12 @@ class ShellCog(commands.Cog):
                 percent_online = str(round(100 * (online_count / counted_shards), 2))
             online_shards = self.shardCount-problems
             new_message = "\N{INFORMATION SOURCE} **Rythm is currently " + str(percent_online) + "% online.** ``" + str(online_shards) + "/" + str(self.shardCount) + "`` shards connected."
-            await self.live_channel_obj.edit(content=new_message)
+            try:
+                await self.live_channel_obj.edit(content=new_message)
+            except:
+                self.live_channel_obj = None
+                print(self.live_channel_obj)
+
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
@@ -119,7 +124,6 @@ class ShellCog(commands.Cog):
 
     @commands.command()
     async def livestop(self, ctx):
-        await self.live_channel_obj.delete()
         self.live_channel_obj = None
 
     @commands.command()
@@ -127,10 +131,10 @@ class ShellCog(commands.Cog):
         embed = discord.Embed()
 
         embed.add_field(name="Command",
-                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status | i]\nri [clusterinfo | ci]\nri check\nri livestart\nri livestop",
+                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status | i]\nri [clusterinfo | ci]\nri check\nri livestart",
                         inline=True)
         embed.add_field(name="Use",
-                        value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues about a cluster\nInfo on shard issues by issue type \nInfo on shard issues grouped by cluster \nOutputs the loaded shards\nStarts the live update function in the channel used\nStop the live update function and deletes the message",
+                        value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues about a cluster\nInfo on shard issues by issue type \nInfo on shard issues grouped by cluster \nOutputs the loaded shards\nStarts the live update function in the channel used\nDelete the message to stop the live updates",
                         inline=True)
 
         await ctx.send(embed=embed)
