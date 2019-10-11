@@ -8,6 +8,7 @@
 + Ready to transfer servers
 
 *** Coming soon ***
+> `ri live` to give live status updates in #outages during an outage
 > 64-shard concurrency
 > Localising web/ajax logic
 > "Loading" embed edited to content or error
