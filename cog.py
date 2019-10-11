@@ -33,11 +33,10 @@ class ShellCog(commands.Cog):
             refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
             print("refresh", refresh_time)
             embed = discord.Embed(colour=discord.Colour(0x2a60f3),
-                                  description="**Rythm is currently experiencing an outage.** We are aware, and Rythm is rebooting.")
-            embed.set_author(name="Live Rythm Status")
+                                  description="\:information_source: **Live Rythm Status")
+            embed.set_author(name="Rythm Info")
             embed.set_footer(text=refresh_time)
-            embed.add_field(name="Rythm is cuscreenrrently x% online", value="x/4480 shards have started")
-            embed.add_field(name="Rythm should be fully online in x minutes", value="Thank you for your patience")
+            embed.add_field(name="Rythm is currently {}% online", value="{} shards connected")
             print(embed)
             await self.live_channel_obj.edit(embed=embed)
 
@@ -77,8 +76,7 @@ class ShellCog(commands.Cog):
                               description="Loading Live updates...")
         embed.set_author(name="Live Rythm Status")
         embed.set_footer(text="Loading")
-        embed.add_field(name="Loading", value="Loading", inline=False)
-        embed.add_field(name="Loading", value="Loading", inline=False)
+        embed.add_field(name="Loading", value="Loading")
         self.live_channel_obj = await ctx.send(embed=embed)
         embed = None
 
