@@ -64,7 +64,7 @@ class ShellCog(commands.Cog):
 
     @commands.command()
     async def livestart(self, ctx):
-        self.live_channel_obj = ctx.channel.send("hi")
+        self.live_channel_obj = await ctx.channel.send("hi")
 
     @commands.command()
     async def help(self, ctx):
