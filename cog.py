@@ -70,7 +70,7 @@ class ShellCog(commands.Cog):
         embed.set_footer(text="Loading")
         embed.add_field(name="Loading")
         embed.add_field(name="Loading")
-        self.live_channel_obj = await ctx.send(embed=embed)
+        self.live_channel_obj = await ctx.send("hello")
 
     @commands.command()
     async def livestart(self, ctx):
