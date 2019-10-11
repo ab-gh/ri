@@ -66,7 +66,11 @@ class ShellCog(commands.Cog):
     async def livestart(self, ctx):
         embed = discord.Embed(colour=discord.Colour(0x2a60f3),
                               description="Loading Live updates...")
-        self.live_channel_obj = await ctx.channel.send(embed=embed)
+        embed.set_author(name="Live Rythm Status")
+        embed.set_footer(text="Loading")
+        embed.add_field(name="Loading")
+        embed.add_field(name="Loading")
+        self.live_channel_obj = await ctx.send(embed=embed)
 
     @commands.command()
     async def livestart(self, ctx):
