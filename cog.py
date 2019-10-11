@@ -36,8 +36,6 @@ class ShellCog(commands.Cog):
                                   description="\N{INFORMATION SOURCE} **Live Rythm Status**")
             embed.set_author(name="Rythm Info")
             embed.set_footer(text=refresh_time)
-            embed.add_field(name="Rythm is currently {}% online", value="{} shards connected")
-            print(embed)
             async with aiohttp.ClientSession() as session:
                 if self.testing == 0:
                     async with session.get("https://status.rythmbot.co/raw") as response:
@@ -54,7 +52,6 @@ class ShellCog(commands.Cog):
                             message = "Error: HTTP error " + str(response.status)
                             print(message)
             raw = json.loads(raw)
-            print(raw)
             found_count = 0
             online_count = 0
             missing_array = []
@@ -88,6 +85,8 @@ class ShellCog(commands.Cog):
                 problems = counted_shards - online_count
                 percent_online = str(round(100 * (online_count / counted_shards), 2))
             print(problems, " ", percent_online)
+            embed.add_field(name="Rythm is currently {}% online", value="{} shards connected".format(percent_online, problems))
+            print(embed)
             await self.live_channel_obj.edit(embed=embed)
 
     def live_logic(self, raw):
