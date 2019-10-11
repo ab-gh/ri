@@ -30,7 +30,7 @@ class ShellCog(commands.Cog):
     async def live(self):
         if self.live_channel_obj is None: return
         else:
-            print("thing is here")
+            print(self.live_channel_obj)
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
