@@ -26,7 +26,7 @@ class ShellCog(commands.Cog):
     def cog_unload(self):
         self.live.cancel()
 
-    @tasks.loop(seconds=5.0)
+    @tasks.loop(seconds=10.0)
     async def live(self):
         if self.live_channel_obj is None: return
         else:
@@ -38,7 +38,45 @@ class ShellCog(commands.Cog):
             embed.set_footer(text=refresh_time)
             embed.add_field(name="Rythm is currently {}% online", value="{} shards connected")
             print(embed)
+            problems, percent_online = self.live_logic()
+            print(problems, " ", percent_online)
             await self.live_channel_obj.edit(embed=embed)
+
+    def live_logic(self):
+        raw = await self.getJSON(ctx)
+        found_count = 0
+        online_count = 0
+        missing_array = []
+        counted_shards = 0
+        status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
+                       "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
+                       "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
+                       "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
+                       "FAILED_TO_LOGIN": []}
+        string_dict = {"INITIALIZING": "Initialising", "INITIALIZED": "Initialised", "LOGGING_IN": "Logging in",
+                       "CONNECTING_TO_WEBSOCKET": "connecting to websocket", "IDENTIFYING_SESSION": "Identifying",
+                       "AWAITING_LOGIN_CONFIRMATION": "Awaiting confirmation",
+                       "LOADING_SUBSYSTEMS": "Loading subsystems", "CONNECTED": "Websocket is connected",
+                       "ATTEMPTING_TO_RECONNECT": "Attempting to reconnect",
+                       "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue",
+                       "DISCONNECTED": "Websocket is disconnected", "SHUTTING_DOWN": "Shutting down",
+                       "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
+        for i in raw:
+            if True:
+                counted_shards += 1
+                if raw[str(i)] == "CONNECTED":
+                    online_count += 1
+                elif raw[str(i)] in status_dict:
+                    status_dict[raw[str(i)]].append(str(i))
+                else:
+                    missing_array.append(str(i))
+        if online_count == counted_shards:
+            problems = 0
+            percent_online = str(100)
+        else:
+            problems = counted_shards - online_count
+            percent_online = str(round(100 * (online_count / counted_shards), 2))
+        return problems, percent_online
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
