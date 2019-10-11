@@ -33,7 +33,7 @@ class ShellCog(commands.Cog):
             refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
             print("refresh", refresh_time)
             embed = discord.Embed(colour=discord.Colour(0x2a60f3),
-                                  description="\N{INFORMATION_SOURCE} **Live Rythm Status")
+                                  description="\N{INFORMATION SOURCE} **Live Rythm Status")
             embed.set_author(name="Rythm Info")
             embed.set_footer(text=refresh_time)
             embed.add_field(name="Rythm is currently {}% online", value="{} shards connected")
