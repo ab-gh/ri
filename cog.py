@@ -17,7 +17,7 @@ class ShellCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.shardCount = 4480
-        self.testing = 0
+        self.testing = 1
         self.stuck_array = []
         self.live_channel_obj = None
         self.live.start()
@@ -53,16 +53,12 @@ class ShellCog(commands.Cog):
                         else:
                             message = "Error: HTTP error " + str(response.status)
                             print(message)
-                raw_json = json.loads(raw)
-            print(raw_json)
-
-
-            print(raw)
-            ## print(problems, " ", percent_online)
+                raw = json.loads(raw)
+            problems, percent_online = await self.live_logic(self, raw)
+            print(problems, " ", percent_online)
             await self.live_channel_obj.edit(embed=embed)
 
-    async def live_logic(self, ctx):
-        raw = await self.getJSON(ctx)
+    async def live_logic(self, raw):
         print("livelogic")
         found_count = 0
         online_count = 0
