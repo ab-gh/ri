@@ -155,7 +155,8 @@ class ShellCog(commands.Cog):
         self.live_channel_obj = await ctx.send("Loading...")
 
     @commands.command()
-    async def liveend(self, ctx):
+    async def livestop(self, ctx):
+        await self.live_channel_obj.delete()
         self.live_channel_obj = None
 
     @commands.command()
@@ -163,10 +164,10 @@ class ShellCog(commands.Cog):
         embed = discord.Embed()
 
         embed.add_field(name="Command",
-                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status | i]\nri [clusterinfo | ci]\nri check",
+                        value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status | i]\nri [clusterinfo | ci]\nri check\nri livestart\nri livestop",
                         inline=True)
         embed.add_field(name="Use",
-                        value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues about a cluster\nInfo on shard issues by issue type \nInfo on shard issues grouped by cluster \nOutputs the loaded shards ",
+                        value="A ping command\nShows this command\nShard and Cluster info about a guild \nShard and Cluster info about a shard \nInfo on shard issues about a cluster\nInfo on shard issues by issue type \nInfo on shard issues grouped by cluster \nOutputs the loaded shards\nStarts the live update function in the channel used\nStop the live update function and deletes the message",
                         inline=True)
 
         await ctx.send(embed=embed)
