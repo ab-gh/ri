@@ -63,7 +63,7 @@ class ShellCog(commands.Cog):
         return time_in_minutes
 
     @commands.command()
-    async def live(self, ctx):
+    async def livestart(self, ctx):
         self.live_channel_obj = ctx.channel.send("hi")
 
     @commands.command()
