@@ -19,6 +19,17 @@ class ShellCog(commands.Cog):
         self.shardCount = 4480
         self.testing = 0
         self.stuck_array = []
+        self.live_channel_id = None
+        self.live.start()
+        self.index = 0
+
+    def cog_unload(self):
+        self.live.cancel()
+
+    @tasks.loop(seconds=5.0)
+    async def live(self):
+        print(self.index)
+        self.index += 1
 
     async def fetch(self, session, url, ctx):
         async with session.get(url) as response:
