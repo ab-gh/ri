@@ -26,16 +26,13 @@ class ShellCog(commands.Cog):
     def cog_unload(self):
         self.live.cancel()
 
-    @tasks.loop(seconds=3.0)
+    @tasks.loop(seconds=3.0) ## set to 20.0
     async def live(self):
         if self.live_channel_obj is None: return
         else:
             refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
             print("refresh", refresh_time)
-            embed = discord.Embed(colour=discord.Colour(0x2a60f3),
-                                  description="\N{INFORMATION SOURCE} **Live Rythm Status**")
-            embed.set_author(name="Rythm Info")
-            embed.set_footer(text=refresh_time)
+
             async with aiohttp.ClientSession() as session:
                 if self.testing == 0:
                     async with session.get("https://status.rythmbot.co/raw") as response:
@@ -84,11 +81,9 @@ class ShellCog(commands.Cog):
             else:
                 problems = counted_shards - online_count
                 percent_online = str(round(100 * (online_count / counted_shards), 2))
-            print(problems, " ", percent_online)
             online_shards = self.shardCount-problems
-            embed.add_field(name="Rythm is currently {}% online".format(str(percent_online)), value="{} shards connected".format(str(online_shards)))
-            print(embed)
-            await self.live_channel_obj.edit(embed=embed)
+            new_message = "\N{INFORMATION SOURCE} **Rythm is currently " + str(percent_online) + "% online.** ``" + str(online_shards) + "/" + str(self.shardCount) + "`` shards connected."
+            await self.live_channel_obj.edit(content=new_message)
 
     def live_logic(self, raw):
         print("livelogic")
@@ -158,13 +153,7 @@ class ShellCog(commands.Cog):
 
     @commands.command()
     async def livestart(self, ctx):
-        embed = discord.Embed(colour=discord.Colour(0x2a60f3),
-                              description="Loading Live updates...")
-        embed.set_author(name="Live Rythm Status")
-        embed.set_footer(text="Loading")
-        embed.add_field(name="Loading", value="Loading")
-        self.live_channel_obj = await ctx.send(embed=embed)
-        embed = None
+        self.live_channel_obj = await ctx.send("Loading...")
 
     @commands.command()
     async def liveend(self, ctx):
