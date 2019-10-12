@@ -115,7 +115,7 @@ class ShellCog(commands.Cog):
             return ajax_json
 
     def get_resolution_time(self, problems):
-        time_in_minutes = str(timedelta(seconds=int(problems * (6.5 / 16))))
+        time_in_minutes = str(timedelta(seconds=int(problems * (8 / 64))))
         return time_in_minutes
 
     @commands.command()
