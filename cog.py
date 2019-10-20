@@ -16,7 +16,7 @@ class ShellCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.shardCount = 4480
-        self.testing = 0
+        self.testing = 1
         self.stuck_array = []
         self.live_channel_obj = None
         self.live.start()
@@ -46,7 +46,7 @@ class ShellCog(commands.Cog):
             if response.status == 200:
                 return await response.text()
             else:
-                message = "Error: HTTP error " + str(response.status)
+                print("error with fetch()")
 
     def cog_unload(self):
         self.live.cancel()
