@@ -151,7 +151,7 @@ class ShellCog(commands.Cog):
     # ! DONE
     async def info(self, ctx, cluster_choice):
         raw = await self.getJSON()
-        counted_shards, online_count, missing_array, status_dict = self.build_status_dict(self, raw, cluster_choice)
+        counted_shards, online_count, missing_array, status_dict = self.build_status_dict(raw, cluster_choice)
         if cluster_choice == "all":
             command_type = ""
         else:
