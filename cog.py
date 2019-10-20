@@ -5,7 +5,6 @@ import numpy
 import typing
 
 import discord
-import requests
 import aiohttp
 import asyncio
 from discord.ext import commands, tasks
@@ -22,15 +21,40 @@ class ShellCog(commands.Cog):
         self.live_channel_obj = None
         self.live.start()
         self.index = 0
+        self.string_dict = {"INITIALIZING": "Initialising", "INITIALIZED": "Initialised", "LOGGING_IN": "Logging in",
+                           "CONNECTING_TO_WEBSOCKET": "connecting to websocket", "IDENTIFYING_SESSION": "Identifying",
+                           "AWAITING_LOGIN_CONFIRMATION": "Awaiting confirmation",
+                           "LOADING_SUBSYSTEMS": "Loading subsystems", "CONNECTED": "Websocket is connected",
+                           "ATTEMPTING_TO_RECONNECT": "Attempting to reconnect",
+                           "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue",
+                           "DISCONNECTED": "Websocket is disconnected", "SHUTTING_DOWN": "Shutting down",
+                           "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
+
+    async def getJSON(self):
+        async with aiohttp.ClientSession() as session:
+            if self.testing == 0:
+                raw = await self.fetch(session, "http://10.10.10.61:1346/shardinfo")
+                ## https://status.rythmbot.co/raw for when external
+                ## http://10.10.10.61:1346/shardinfo when internal
+            else:
+                raw = await self.fetch(session, "http://cdn.dvorak.host/test.json")
+            raw_json = json.loads(raw)
+            return raw_json
+
+    async def fetch(self, session, url):
+        async with session.get(url) as response:
+            if response.status == 200:
+                return await response.text()
+            else:
+                message = "Error: HTTP error " + str(response.status)
 
     def cog_unload(self):
         self.live.cancel()
 
-    @tasks.loop(seconds=20.0) ## set to 20.0
+    @tasks.loop(seconds=20.0)
     async def live(self):
         if self.live_channel_obj is None: return
         else:
-            refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
             async with aiohttp.ClientSession() as session:
                 if self.testing == 0:
                     async with session.get("http://10.10.10.61:1346/shardinfo") as response:
@@ -46,7 +70,7 @@ class ShellCog(commands.Cog):
                         else:
                             message = "Error: HTTP error " + str(response.status)
                             print(message)
-            await session.close()
+            # await session.close()
             raw = json.loads(raw)
             found_count = 0
             online_count = 0
@@ -57,14 +81,6 @@ class ShellCog(commands.Cog):
                            "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
                            "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
                            "FAILED_TO_LOGIN": []}
-            string_dict = {"INITIALIZING": "Initialising", "INITIALIZED": "Initialised", "LOGGING_IN": "Logging in",
-                           "CONNECTING_TO_WEBSOCKET": "connecting to websocket", "IDENTIFYING_SESSION": "Identifying",
-                           "AWAITING_LOGIN_CONFIRMATION": "Awaiting confirmation",
-                           "LOADING_SUBSYSTEMS": "Loading subsystems", "CONNECTED": "Websocket is connected",
-                           "ATTEMPTING_TO_RECONNECT": "Attempting to reconnect",
-                           "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue",
-                           "DISCONNECTED": "Websocket is disconnected", "SHUTTING_DOWN": "Shutting down",
-                           "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
             for i in raw:
                 if True:
                     counted_shards += 1
@@ -87,26 +103,6 @@ class ShellCog(commands.Cog):
             except:
                 self.live_channel_obj = None
                 print(self.live_channel_obj)
-
-
-    async def fetch(self, session, url, ctx):
-        async with session.get(url) as response:
-            if response.status == 200:
-                return await response.text()
-            else:
-                message = "Error: HTTP error " + str(response.status)
-                await ctx.channel.send(message)
-
-    async def getJSON(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            if self.testing == 0:
-                raw = await self.fetch(session, "http://10.10.10.61:1346/shardinfo", ctx)
-                ## https://status.rythmbot.co/raw for when external
-                ## http://10.10.10.61:1346/shardinfo when internal
-            else:
-                raw = await self.fetch(session, "http://cdn.dvorak.host/test.json", ctx)
-            raw_json = json.loads(raw)
-            return raw_json
 
     async def getAJAX(self, ctx, guild_id):
         async with aiohttp.ClientSession() as session:
@@ -151,7 +147,6 @@ class ShellCog(commands.Cog):
             message = "Error: You need to specify a " + errorname + " ID."
             await ctx.channel.send(message)
             print("\ncommandError\t", error)
-        ## add commands.CommandInvokeError?
 
     async def info(self, ctx, cluster_choice):
         raw = await self.getJSON(ctx)
@@ -164,14 +159,6 @@ class ShellCog(commands.Cog):
                        "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
                        "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
                        "FAILED_TO_LOGIN": []}
-        string_dict = {"INITIALIZING": "Initialising", "INITIALIZED": "Initialised", "LOGGING_IN": "Logging in",
-                       "CONNECTING_TO_WEBSOCKET": "connecting to websocket", "IDENTIFYING_SESSION": "Identifying",
-                       "AWAITING_LOGIN_CONFIRMATION": "Awaiting confirmation",
-                       "LOADING_SUBSYSTEMS": "Loading subsystems", "CONNECTED": "Websocket is connected",
-                       "ATTEMPTING_TO_RECONNECT": "Attempting to reconnect",
-                       "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue",
-                       "DISCONNECTED": "Websocket is disconnected", "SHUTTING_DOWN": "Shutting down",
-                       "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
         for i in raw:
             if cluster_choice == "all" or int(math.floor(int(i) / int(math.ceil(self.shardCount / 9)))) == int(cluster_choice):
                 counted_shards += 1
@@ -205,7 +192,7 @@ class ShellCog(commands.Cog):
             embed.set_footer(text="a bot by ash#0001")
             for selection in status_dict:
                 if len(status_dict[selection]) != 0:
-                    embed.add_field(name=string_dict[selection], value=str((len(status_dict[selection]))), inline=False)
+                    embed.add_field(name=self.string_dict[selection], value=str((len(status_dict[selection]))), inline=False)
                 elif len(missing_array) != 0:
                     embed.add_field(name="Data missing", value=str((len(missing_array))), inline=False)
             if problems != 0:
