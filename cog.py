@@ -55,22 +55,8 @@ class ShellCog(commands.Cog):
     async def live(self):
         if self.live_channel_obj is None: return
         else:
-            async with aiohttp.ClientSession() as session:
-                if self.testing == 0:
-                    async with session.get("http://10.10.10.61:1346/shardinfo") as response:
-                        if response.status == 200:
-                            raw = await response.text()
-                        else:
-                            message = "Error: HTTP error " + str(response.status)
-                            print(message)
-                else:
-                    async with session.get("http://cdn.dvorak.host/test.json") as response:
-                        if response.status == 200:
-                            raw = await response.text()
-                        else:
-                            message = "Error: HTTP error " + str(response.status)
-                            print(message)
             # await session.close()
+            raw = self.getJSON()
             raw = json.loads(raw)
             cluster_choice="all"
             counted_shards, online_count, missing_array, status_dict = self.build_status_dict(raw, cluster_choice)
