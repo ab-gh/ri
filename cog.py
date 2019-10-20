@@ -46,6 +46,7 @@ class ShellCog(commands.Cog):
                         else:
                             message = "Error: HTTP error " + str(response.status)
                             print(message)
+            await session.close()
             raw = json.loads(raw)
             found_count = 0
             online_count = 0
