@@ -72,30 +72,10 @@ class ShellCog(commands.Cog):
                             print(message)
             # await session.close()
             raw = json.loads(raw)
-            found_count = 0
-            online_count = 0
-            missing_array = []
-            counted_shards = 0
-            status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
-                           "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
-                           "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
-                           "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
-                           "FAILED_TO_LOGIN": []}
-            for i in raw:
-                if True:
-                    counted_shards += 1
-                    if raw[str(i)] == "CONNECTED":
-                        online_count += 1
-                    elif raw[str(i)] in status_dict:
-                        status_dict[raw[str(i)]].append(str(i))
-                    else:
-                        missing_array.append(str(i))
-            if online_count == counted_shards:
-                problems = 0
-                percent_online = str(100)
-            else:
-                problems = counted_shards - online_count
-                percent_online = str(round(100 * (online_count / counted_shards), 2))
+            cluster_choice="all"
+            counted_shards, online_count, missing_array, status_dict = self.build_status_dict(self, raw, cluster_choice)
+            problems = counted_shards - online_count
+            percent_online = str(round(100 * (online_count / counted_shards), 2))
             online_shards = self.shardCount-problems
             new_message = "\N{INFORMATION SOURCE} **Rythm is currently " + str(percent_online) + "% online.** ``" + str(online_shards) + "/" + str(self.shardCount) + "`` shards connected."
             try:
@@ -120,13 +100,12 @@ class ShellCog(commands.Cog):
         self.live_channel_obj = await ctx.send("Loading...")
 
     @commands.command()
-    async def livestop(self, ctx):
+    async def livestop(self):
         self.live_channel_obj = None
 
     @commands.command()
     async def help(self, ctx):
         embed = discord.Embed()
-
         embed.add_field(name="Command",
                         value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status | i]\nri [clusterinfo | ci]\nri check\nri livestart",
                         inline=True)
@@ -148,12 +127,11 @@ class ShellCog(commands.Cog):
             await ctx.channel.send(message)
             print("\ncommandError\t", error)
 
-    async def info(self, ctx, cluster_choice):
-        raw = await self.getJSON()
-        found_count = 0
+    # ! DONE
+    def build_status_dict(self, raw, cluster_choice):
+        counted_shards = 0
         online_count = 0
         missing_array = []
-        counted_shards = 0
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
                        "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
@@ -168,6 +146,12 @@ class ShellCog(commands.Cog):
                     status_dict[raw[str(i)]].append(str(i))
                 else:
                     missing_array.append(str(i))
+        return(counted_shards, online_count, missing_array, status_dict)
+
+    # ! DONE
+    async def info(self, ctx, cluster_choice):
+        raw = await self.getJSON()
+        counted_shards, online_count, missing_array, status_dict = self.build_status_dict(self, raw, cluster_choice)
         if cluster_choice == "all":
             command_type = ""
         else:
@@ -280,8 +264,6 @@ class ShellCog(commands.Cog):
         if problems != 0:
             embed.add_field(name="Expected Resolution Time", value=self.get_resolution_time(problems), inline=False)
         await ctx.send(embed=embed)
-
-
 
     @commands.command()
     async def check(self, ctx):
