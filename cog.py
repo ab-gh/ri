@@ -56,9 +56,9 @@ class ShellCog(commands.Cog):
         if self.live_channel_obj is None: return
         else:
             # await session.close()
-            raw = self.getJSON()
             print("got json")
             cluster_choice="all"
+            raw = await self.getJSON()
             counted_shards, online_count, missing_array, status_dict = self.build_status_dict(raw, cluster_choice)
             print("counted shards")
             problems = counted_shards - online_count
@@ -126,7 +126,7 @@ class ShellCog(commands.Cog):
                        "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
                        "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
                        "FAILED_TO_LOGIN": []}
-        print(raw)
+        #print(raw)
         for i in raw:
             if cluster_choice == "all" or int(math.floor(int(i) / int(math.ceil(self.shardCount / 9)))) == int(cluster_choice):
                 counted_shards += 1
