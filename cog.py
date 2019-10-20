@@ -149,7 +149,7 @@ class ShellCog(commands.Cog):
             print("\ncommandError\t", error)
 
     async def info(self, ctx, cluster_choice):
-        raw = await self.getJSON(ctx)
+        raw = await self.getJSON()
         found_count = 0
         online_count = 0
         missing_array = []
