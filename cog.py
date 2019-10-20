@@ -73,7 +73,7 @@ class ShellCog(commands.Cog):
             # await session.close()
             raw = json.loads(raw)
             cluster_choice="all"
-            counted_shards, online_count, missing_array, status_dict = self.build_status_dict(self, raw, cluster_choice)
+            counted_shards, online_count, missing_array, status_dict = self.build_status_dict(raw, cluster_choice)
             problems = counted_shards - online_count
             percent_online = str(round(100 * (online_count / counted_shards), 2))
             online_shards = self.shardCount-problems
