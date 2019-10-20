@@ -133,6 +133,9 @@ class ShellCog(commands.Cog):
                     status_dict[raw[str(i)]].append(str(i))
                 else:
                     missing_array.append(str(i))
+        print(counted_shards)
+        print(online_count)
+        print(missing_array)
         return(counted_shards, online_count, missing_array, status_dict)
 
     # ! DONE
