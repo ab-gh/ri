@@ -126,6 +126,7 @@ class ShellCog(commands.Cog):
                        "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
                        "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
                        "FAILED_TO_LOGIN": []}
+        print(raw)
         for i in raw:
             if cluster_choice == "all" or int(math.floor(int(i) / int(math.ceil(self.shardCount / 9)))) == int(cluster_choice):
                 counted_shards += 1
