@@ -116,6 +116,7 @@ class ShellCog(commands.Cog):
 
     # ! DONE
     def build_status_dict(self, raw, cluster_choice):
+        print("called build")
         counted_shards = 0
         online_count = 0
         missing_array = []
