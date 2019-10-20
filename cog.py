@@ -39,6 +39,7 @@ class ShellCog(commands.Cog):
             else:
                 raw = await self.fetch(session, "http://cdn.dvorak.host/test.json")
             raw_json = json.loads(raw)
+            await session.close()
             return raw_json
 
     async def fetch(self, session, url):
@@ -55,12 +56,9 @@ class ShellCog(commands.Cog):
     async def live(self):
         if self.live_channel_obj is None: return
         else:
-            # await session.close()
-            print("got json")
             cluster_choice="all"
             raw = await self.getJSON()
             counted_shards, online_count, missing_array, status_dict = self.build_status_dict(raw, cluster_choice)
-            print("counted shards")
             problems = counted_shards - online_count
             percent_online = str(round(100 * (online_count / counted_shards), 2))
             online_shards = self.shardCount-problems
@@ -116,17 +114,14 @@ class ShellCog(commands.Cog):
 
     # ! DONE
     def build_status_dict(self, raw, cluster_choice):
-        print("called build")
         counted_shards = 0
         online_count = 0
         missing_array = []
-        print(cluster_choice)
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
                        "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
                        "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
                        "FAILED_TO_LOGIN": []}
-        #print(raw)
         for i in raw:
             if cluster_choice == "all" or int(math.floor(int(i) / int(math.ceil(self.shardCount / 9)))) == int(cluster_choice):
                 counted_shards += 1
@@ -136,9 +131,6 @@ class ShellCog(commands.Cog):
                     status_dict[raw[str(i)]].append(str(i))
                 else:
                     missing_array.append(str(i))
-        print(counted_shards)
-        print(online_count)
-        print(missing_array)
         return(counted_shards, online_count, missing_array, status_dict)
 
     # ! DONE
