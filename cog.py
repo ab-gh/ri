@@ -87,6 +87,7 @@ class ShellCog(commands.Cog):
     @commands.command()
     async def livestop(self, ctx):
         self.live_channel_obj = None
+        print(self.live_channel_obj)
 
     @commands.command()
     async def help(self, ctx):
