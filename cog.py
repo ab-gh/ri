@@ -5,7 +5,6 @@ import numpy
 import typing
 
 import discord
-import requests
 import aiohttp
 import asyncio
 from discord.ext import commands, tasks
@@ -22,41 +21,7 @@ class ShellCog(commands.Cog):
         self.live_channel_obj = None
         self.live.start()
         self.index = 0
-
-    def cog_unload(self):
-        self.live.cancel()
-
-    @tasks.loop(seconds=20.0) ## set to 20.0
-    async def live(self):
-        if self.live_channel_obj is None: return
-        else:
-            refresh_time = datetime.fromtimestamp(datetime.timestamp(datetime.now()))
-            async with aiohttp.ClientSession() as session:
-                if self.testing == 0:
-                    async with session.get("http://10.10.10.61:1346/shardinfo") as response:
-                        if response.status == 200:
-                            raw = await response.text()
-                        else:
-                            message = "Error: HTTP error " + str(response.status)
-                            print(message)
-                else:
-                    async with session.get("http://cdn.dvorak.host/test.json") as response:
-                        if response.status == 200:
-                            raw = await response.text()
-                        else:
-                            message = "Error: HTTP error " + str(response.status)
-                            print(message)
-            raw = json.loads(raw)
-            found_count = 0
-            online_count = 0
-            missing_array = []
-            counted_shards = 0
-            status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
-                           "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
-                           "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
-                           "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
-                           "FAILED_TO_LOGIN": []}
-            string_dict = {"INITIALIZING": "Initialising", "INITIALIZED": "Initialised", "LOGGING_IN": "Logging in",
+        self.string_dict = {"INITIALIZING": "Initialising", "INITIALIZED": "Initialised", "LOGGING_IN": "Logging in",
                            "CONNECTING_TO_WEBSOCKET": "connecting to websocket", "IDENTIFYING_SESSION": "Identifying",
                            "AWAITING_LOGIN_CONFIRMATION": "Awaiting confirmation",
                            "LOADING_SUBSYSTEMS": "Loading subsystems", "CONNECTED": "Websocket is connected",
@@ -64,21 +29,38 @@ class ShellCog(commands.Cog):
                            "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue",
                            "DISCONNECTED": "Websocket is disconnected", "SHUTTING_DOWN": "Shutting down",
                            "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
-            for i in raw:
-                if True:
-                    counted_shards += 1
-                    if raw[str(i)] == "CONNECTED":
-                        online_count += 1
-                    elif raw[str(i)] in status_dict:
-                        status_dict[raw[str(i)]].append(str(i))
-                    else:
-                        missing_array.append(str(i))
-            if online_count == counted_shards:
-                problems = 0
-                percent_online = str(100)
+
+    async def getJSON(self):
+        async with aiohttp.ClientSession() as session:
+            if self.testing == 0:
+                raw = await self.fetch(session, "http://10.10.10.61:1346/shardinfo")
+                ## https://status.rythmbot.co/raw for when external
+                ## http://10.10.10.61:1346/shardinfo when internal
             else:
-                problems = counted_shards - online_count
-                percent_online = str(round(100 * (online_count / counted_shards), 2))
+                raw = await self.fetch(session, "http://cdn.dvorak.host/test.json")
+            raw_json = json.loads(raw)
+            await session.close()
+            return raw_json
+
+    async def fetch(self, session, url):
+        async with session.get(url) as response:
+            if response.status == 200:
+                return await response.text()
+            else:
+                print("error with fetch()")
+
+    def cog_unload(self):
+        self.live.cancel()
+
+    @tasks.loop(seconds=5.0)
+    async def live(self):
+        if self.live_channel_obj is None: return
+        else:
+            cluster_choice="all"
+            raw = await self.getJSON()
+            counted_shards, online_count, missing_array, status_dict = self.build_status_dict(raw, cluster_choice)
+            problems = counted_shards - online_count
+            percent_online = str(round(100 * (online_count / counted_shards), 2))
             online_shards = self.shardCount-problems
             new_message = "\N{INFORMATION SOURCE} **Rythm is currently " + str(percent_online) + "% online.** ``" + str(online_shards) + "/" + str(self.shardCount) + "`` shards connected."
             try:
@@ -86,26 +68,6 @@ class ShellCog(commands.Cog):
             except:
                 self.live_channel_obj = None
                 print(self.live_channel_obj)
-
-
-    async def fetch(self, session, url, ctx):
-        async with session.get(url) as response:
-            if response.status == 200:
-                return await response.text()
-            else:
-                message = "Error: HTTP error " + str(response.status)
-                await ctx.channel.send(message)
-
-    async def getJSON(self, ctx):
-        async with aiohttp.ClientSession() as session:
-            if self.testing == 0:
-                raw = await self.fetch(session, "http://10.10.10.61:1346/shardinfo", ctx)
-                ## https://status.rythmbot.co/raw for when external
-                ## http://10.10.10.61:1346/shardinfo when internal
-            else:
-                raw = await self.fetch(session, "http://cdn.dvorak.host/test.json", ctx)
-            raw_json = json.loads(raw)
-            return raw_json
 
     async def getAJAX(self, ctx, guild_id):
         async with aiohttp.ClientSession() as session:
@@ -125,11 +87,11 @@ class ShellCog(commands.Cog):
     @commands.command()
     async def livestop(self, ctx):
         self.live_channel_obj = None
+        print(self.live_channel_obj)
 
     @commands.command()
     async def help(self, ctx):
         embed = discord.Embed()
-
         embed.add_field(name="Command",
                         value="ri hello\nri help\nri [guild | g] {gID}\nri [shard | s] {sID}\nri [cluster | c] {cID}\nri [status | i]\nri [clusterinfo | ci]\nri check\nri livestart",
                         inline=True)
@@ -150,27 +112,17 @@ class ShellCog(commands.Cog):
             message = "Error: You need to specify a " + errorname + " ID."
             await ctx.channel.send(message)
             print("\ncommandError\t", error)
-        ## add commands.CommandInvokeError?
 
-    async def info(self, ctx, cluster_choice):
-        raw = await self.getJSON(ctx)
-        found_count = 0
+    # ! DONE
+    def build_status_dict(self, raw, cluster_choice):
+        counted_shards = 0
         online_count = 0
         missing_array = []
-        counted_shards = 0
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
                        "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
                        "RECONNECT_QUEUED": [], "DISCONNECTED": [], "SHUTTING_DOWN": [], "SHUTDOWN": [],
                        "FAILED_TO_LOGIN": []}
-        string_dict = {"INITIALIZING": "Initialising", "INITIALIZED": "Initialised", "LOGGING_IN": "Logging in",
-                       "CONNECTING_TO_WEBSOCKET": "connecting to websocket", "IDENTIFYING_SESSION": "Identifying",
-                       "AWAITING_LOGIN_CONFIRMATION": "Awaiting confirmation",
-                       "LOADING_SUBSYSTEMS": "Loading subsystems", "CONNECTED": "Websocket is connected",
-                       "ATTEMPTING_TO_RECONNECT": "Attempting to reconnect",
-                       "WAITING_TO_RECONNECT": "Waiting to reconnect", "RECONNECT_QUEUED": "In reconnect queue",
-                       "DISCONNECTED": "Websocket is disconnected", "SHUTTING_DOWN": "Shutting down",
-                       "SHUTDOWN": "Shut down", "FAILED_TO_LOGIN": "Failed to log in"}
         for i in raw:
             if cluster_choice == "all" or int(math.floor(int(i) / int(math.ceil(self.shardCount / 9)))) == int(cluster_choice):
                 counted_shards += 1
@@ -180,6 +132,12 @@ class ShellCog(commands.Cog):
                     status_dict[raw[str(i)]].append(str(i))
                 else:
                     missing_array.append(str(i))
+        return(counted_shards, online_count, missing_array, status_dict)
+
+    # ! DONE
+    async def info(self, ctx, cluster_choice):
+        raw = await self.getJSON()
+        counted_shards, online_count, missing_array, status_dict = self.build_status_dict(raw, cluster_choice)
         if cluster_choice == "all":
             command_type = ""
         else:
@@ -204,7 +162,7 @@ class ShellCog(commands.Cog):
             embed.set_footer(text="a bot by ash#0001")
             for selection in status_dict:
                 if len(status_dict[selection]) != 0:
-                    embed.add_field(name=string_dict[selection], value=str((len(status_dict[selection]))), inline=False)
+                    embed.add_field(name=self.string_dict[selection], value=str((len(status_dict[selection]))), inline=False)
                 elif len(missing_array) != 0:
                     embed.add_field(name="Data missing", value=str((len(missing_array))), inline=False)
             if problems != 0:
@@ -292,8 +250,6 @@ class ShellCog(commands.Cog):
         if problems != 0:
             embed.add_field(name="Expected Resolution Time", value=self.get_resolution_time(problems), inline=False)
         await ctx.send(embed=embed)
-
-
 
     @commands.command()
     async def check(self, ctx):
