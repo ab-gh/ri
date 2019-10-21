@@ -52,7 +52,7 @@ class ShellCog(commands.Cog):
     def cog_unload(self):
         self.live.cancel()
 
-    @tasks.loop(seconds=20.0)
+    @tasks.loop(seconds=5.0)
     async def live(self):
         if self.live_channel_obj is None: return
         else:
@@ -85,7 +85,7 @@ class ShellCog(commands.Cog):
         self.live_channel_obj = await ctx.send("Loading...")
 
     @commands.command()
-    async def livestop(self):
+    async def livestop(self, ctx):
         self.live_channel_obj = None
 
     @commands.command()
