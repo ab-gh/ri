@@ -222,7 +222,7 @@ class ShellCog(commands.Cog):
     async def clusterinfo(self, ctx):
         onlinecount = 0
         issues_array = []
-        raw = await self.getJSON(ctx)
+        raw = await self.getJSON()
         for shard_status in raw:
             if raw[str(shard_status)] == "CONNECTED":
                 onlinecount += 1
@@ -253,7 +253,7 @@ class ShellCog(commands.Cog):
 
     @commands.command()
     async def check(self, ctx):
-        raw = await self.getJSON(ctx)
+        raw = await self.getJSON()
         shards_loaded = 0
         for i in raw:
             shards_loaded += 1
