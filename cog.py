@@ -16,7 +16,7 @@ class ShellCog(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
         self.shardCount = 4480
-        self.testing = 0
+        self.testing = 1
         self.stuck_array = []
         self.live_channel_obj = None
         self.live.start()
@@ -72,7 +72,7 @@ class ShellCog(commands.Cog):
     async def getAJAX(self, ctx, guild_id):
         async with aiohttp.ClientSession() as session:
             combined = str("https://web.rythmbot.co/ajax/shard/" + str(guild_id))
-            ajax = await self.fetch(session, combined, ctx)
+            ajax = await self.fetch(session, combined)
             ajax_json = json.loads(ajax)
             return ajax_json
 
