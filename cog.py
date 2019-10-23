@@ -72,7 +72,7 @@ class ShellCog(commands.Cog):
     async def getAJAX(self, ctx, guild_id):
         async with aiohttp.ClientSession() as session:
             combined = str("https://web.rythmbot.co/ajax/shard/" + str(guild_id))
-            ajax = await self.fetch(session, combined, ctx)
+            ajax = await self.fetch(session, combined)
             ajax_json = json.loads(ajax)
             return ajax_json
 
@@ -202,7 +202,7 @@ class ShellCog(commands.Cog):
         embed.add_field(name="Guild", value=str(guild_id), inline=False)
         embed.add_field(name="Shard", value=str(shard_id), inline=False)
         embed.add_field(name="Cluster", value=str(cluster_id), inline=False)
-        raw_stat = await self.getJSON(ctx)
+        raw_stat = await self.getJSON()
         embed.add_field(name="Status", value=raw_stat[str(shard_id)], inline=False)
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
@@ -213,7 +213,7 @@ class ShellCog(commands.Cog):
         embed.add_field(name="Shard", value=str(shard_id), inline=False)
         embed.add_field(name="Cluster", value=str(math.floor(int(shard_id) / int(math.ceil(self.shardCount / 9)))),
                         inline=False)
-        raw_stat = await self.getJSON(ctx)
+        raw_stat = await self.getJSON()
         embed.add_field(name="Status", value=raw_stat[str(shard_id)], inline=False)
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
@@ -268,7 +268,7 @@ class ShellCog(commands.Cog):
     @commands.command()
     async def stuck(self, ctx):
         onlinecount = 0
-        raw = await self.getJSON(ctx)
+        raw = await self.getJSON()
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
                        "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
