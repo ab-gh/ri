@@ -202,7 +202,7 @@ class ShellCog(commands.Cog):
         embed.add_field(name="Guild", value=str(guild_id), inline=False)
         embed.add_field(name="Shard", value=str(shard_id), inline=False)
         embed.add_field(name="Cluster", value=str(cluster_id), inline=False)
-        raw_stat = await self.getJSON(ctx)
+        raw_stat = await self.getJSON()
         embed.add_field(name="Status", value=raw_stat[str(shard_id)], inline=False)
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
