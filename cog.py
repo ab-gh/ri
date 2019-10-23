@@ -213,7 +213,7 @@ class ShellCog(commands.Cog):
         embed.add_field(name="Shard", value=str(shard_id), inline=False)
         embed.add_field(name="Cluster", value=str(math.floor(int(shard_id) / int(math.ceil(self.shardCount / 9)))),
                         inline=False)
-        raw_stat = await self.getJSON(ctx)
+        raw_stat = await self.getJSON()
         embed.add_field(name="Status", value=raw_stat[str(shard_id)], inline=False)
         embed.set_footer(text="a bot by ash#0001")
         await ctx.send(embed=embed)
@@ -222,7 +222,7 @@ class ShellCog(commands.Cog):
     async def clusterinfo(self, ctx):
         onlinecount = 0
         issues_array = []
-        raw = await self.getJSON(ctx)
+        raw = await self.getJSON()
         for shard_status in raw:
             if raw[str(shard_status)] == "CONNECTED":
                 onlinecount += 1
@@ -268,7 +268,7 @@ class ShellCog(commands.Cog):
     @commands.command()
     async def stuck(self, ctx):
         onlinecount = 0
-        raw = await self.getJSON(ctx)
+        raw = await self.getJSON()
         status_dict = {"INITIALIZING": [], "INITIALIZED": [], "LOGGING_IN": [], "CONNECTING_TO_WEBSOCKET": [],
                        "IDENTIFYING_SESSION": [], "AWAITING_LOGIN_CONFIRMATION": [], "LOADING_SUBSYSTEMS": [],
                        "CONNECTED": [], "ATTEMPTING_TO_RECONNECT": [], "WAITING_TO_RECONNECT": [],
